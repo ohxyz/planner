@@ -1,2 +1,1 @@
-export { designReducer } from './design';
-export { mainPanelReducer } from './main-panel';
+export { undoableReducer } from './undoable';

@@ -5,8 +5,8 @@ const mapStateToProps = state => {
 
     return {
 
-        width: state.mainPanel.present.width,
-        height: state.mainPanel.present.height
+        width: state.undoable.present.mainPanel.width,
+        height: state.undoable.present.mainPanel.height
     };
 };
 

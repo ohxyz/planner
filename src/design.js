@@ -6,7 +6,9 @@ import { addDesignRow, resizeDesignRow } from './redux/actions';
 const mapStateToProps = state => {
 
     return {
-        rows: state.design.present.rows
+        width: state.undoable.present.design.width,
+        height: state.undoable.present.design.height,
+        rows: state.undoable.present.design.rows
     };
 };
 
@@ -25,10 +27,14 @@ function Design( props ) {
     const {
 
         rows = [],
+        width = 100,
+        height = 100,
         onAddRowClick = () => { throw new Error( 'n/a' ) },
         onResizeRowFinish = ( index, height ) => { throw new Error( 'n/a' ) }
 
     } = props;
+
+    const style = { width: width + 'px', minHeight: height + 'px' };
 
     let lastY = 0;
     let activeRowElement = null;
@@ -94,7 +100,8 @@ function Design( props ) {
         }
     }
 
-    return  <div className="design" 
+    return  <div className="design"
+                 style={ style }
                  onMouseDown={ handleMouseDown }
                  onMouseUp={ handleMouseUp }
                  onMouseMove={ handleMouseMove }
