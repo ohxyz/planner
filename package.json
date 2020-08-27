@@ -1,0 +1,38 @@
+{
+  "name": "p20r",
+  "version": "0.0.1",
+  "description": "A basic setup of React development environment",
+  "scripts": {
+    "build": "webpack --config webpack.dev.js",
+    "dev": "webpack-dev-server --config webpack.dev.js --open"
+  },
+  "author": "Ohxyz",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "setup",
+    "install",
+    "babel",
+    "webpack",
+    "create-react-app"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.2.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "redux-undo": "^1.0.1",
+    "sass": "^1.26.10",
+    "sass-loader": "^9.0.3",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,70 @@
+@import "./design";
+@import "./placeholder";
+@import "./comp-panel";
+
+.app {
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    // Avoid scollbars when drag a Dnr
+    overflow: hidden;
+}
+
+.tool-bar {
+
+    position: absolute;
+    background-color: #cccccc;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--tool-bar-height);
+    z-index: 1000;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.prop-panel {
+
+    position: absolute;
+    background-color: var(--black10);
+    top: 100px;
+    right: 0;
+    bottom: 100px;
+    width: var(--prop-panel-width);
+    z-index: 100;
+}
+
+.main-panel {
+
+    width: 800px;
+    height: 800px;
+    background-color: #ff000010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-bar {
+
+    position: absolute;
+    background-color: #cccccc;   
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--status-bar-height);
+    z-index: 1000;
+}
+
+.main-container {
+
+    position: absolute;
+    top: var(--tool-bar-height);
+    left: var(--comp-panel-width);
+    bottom: var(--status-bar-height);
+    right: var(--prop-panel-width);
+    overflow: auto;
+}

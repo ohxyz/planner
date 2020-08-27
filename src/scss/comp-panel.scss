@@ -1,0 +1,19 @@
+@import './vars';
+
+.comp-panel {
+
+    position: absolute;
+    background-color: var(--black10);
+    top: 100px;
+    left: 0;
+    bottom: 100px;
+    width: var(--comp-panel-width);
+    z-index: 100;
+
+    &-item {
+
+        margin: 5px;
+        padding: 5px 10px;
+        background-color: #0000ff50;
+    }
+}
