@@ -1,18 +1,21 @@
-const path = require( 'path' );
-
 module.exports = {
     
     mode: 'development',
     entry: './src/index.js',
     output: {
-        path: path.join( __dirname, 'public' ),
+        path: __dirname + '/public',
         filename: 'bundle.js'
     },
     devtool: 'inline-source-map',
     devServer: {
-        contentBase: path.join( __dirname, 'public' ),
+        contentBase: __dirname + '/public',
         compress: true,
         port: 5000,
+    },
+    resolve: {
+        alias: {
+            ['~']: __dirname + '/src'
+        }
     },
     module: {
         rules: [ 

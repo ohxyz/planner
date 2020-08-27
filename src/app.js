@@ -3,6 +3,7 @@ import { ReduxedDesign } from './design';
 import { store } from './redux/store';
 import { ActionCreators } from 'redux-undo';
 import { CompPanel } from './comp-panel';
+import { ReduxedMainPanel } from './main-panel';
 import { CompPanelItem as CompPanelItemModel } from './models';
 
 const compPanelItems = [
@@ -27,9 +28,9 @@ function App() {
                 <CompPanel items={compPanelItems} />
                 <div className="prop-panel"></div>
                 <div className="main-container">
-                    <div className="main-panel">
+                    <ReduxedMainPanel>
                         <ReduxedDesign />
-                    </div>
+                    </ReduxedMainPanel>
                 </div>
                 <div className="status-bar">
                     <button onClick={ undo } >Undo</button>

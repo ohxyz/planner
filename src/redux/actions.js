@@ -26,3 +26,8 @@ export function removePlaceholder( rowIndex, phIndex ) {
 
     return { type: 'design/remove-placeholder', rowIndex, phIndex }
 }
+
+export function resizeMainPanel( width, height ) {
+
+    return { type: 'main-panel/resize', width, height }
+}

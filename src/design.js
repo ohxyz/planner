@@ -6,7 +6,7 @@ import { addDesignRow, resizeDesignRow } from './redux/actions';
 const mapStateToProps = state => {
 
     return {
-        design: state.design.present.design
+        rows: state.design.present.rows
     };
 };
 
@@ -24,7 +24,7 @@ function Design( props ) {
 
     const {
 
-        design = { rows: [] },
+        rows = [],
         onAddRowClick = () => { throw new Error( 'n/a' ) },
         onResizeRowFinish = ( index, height ) => { throw new Error( 'n/a' ) }
 
@@ -100,7 +100,7 @@ function Design( props ) {
                  onMouseMove={ handleMouseMove }
             >
                 {
-                    design.rows.map( (row, idx) => {
+                    rows.map( (row, idx) => {
 
                         return  <ReduxedDesignRow 
                                     key={idx} 
