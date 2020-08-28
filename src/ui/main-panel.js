@@ -6,13 +6,15 @@ function MainPanel( props ) {
 
     const {
         width = 800,
-        height = 800
+        height = 800,
+        zoom = 1,
     } = props;
 
     const style = {
 
         width: width + 'px',
-        height: height + 'px'
+        height: height + 'px',
+        transform: `scale(${zoom})`
     };
 
     return  <div className={ css['main-panel'] } style={style}>
@@ -25,7 +27,8 @@ const mapStateToProps = state => {
     return {
 
         width: state.undoable.present.mainPanel.width,
-        height: state.undoable.present.mainPanel.height
+        height: state.undoable.present.mainPanel.height,
+        zoom: state.mainPanel.zoom
     };
 };
 

@@ -2,11 +2,12 @@ import { createStore, combineReducers } from 'redux';
 import undoable, { ActionCreators } from 'redux-undo';
 import utils from '../utils';
 import { Row, Placeholder } from '../models';
-import { undoableReducer } from './reducers';
+import { undoableReducer, mainPanelReducer } from './reducers';
 
 const roodReducer = combineReducers( { 
 
-    undoable: undoable( undoableReducer )
+    undoable: undoable( undoableReducer ),
+    mainPanel: mainPanelReducer
 } );
 
 const store = createStore( 

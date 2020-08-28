@@ -26,7 +26,8 @@ const initState = {
     },
     mainPanel: {
         width: 800,
-        height: 800
+        height: 800,
+        zoom: 1,
     },
     foo: 'bar'
 }
@@ -104,7 +105,7 @@ export function undoableReducer( state=initState, action ) {
     
     if ( action.type === 'main-panel/resize' ) {
 
-        const newState = utils.clone( state )
+        const newState = utils.clone( state );
 
         newState.mainPanel.width = action.width;
         newState.mainPanel.height = action.height;
@@ -112,6 +113,13 @@ export function undoableReducer( state=initState, action ) {
         return newState;
     }
 
+    // if ( action.type === 'main-panel/zoom' ) {
+
+    //     const newState = utils.clone( state );
+    //     newState.mainPanel.zoom = action.size;
+
+    //     return newState;
+    // }
 
     return state;
 }

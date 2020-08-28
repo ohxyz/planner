@@ -4,6 +4,7 @@ import { App } from './ui/app';
 import { store } from './redux/store';
 import { Provider } from 'react-redux';
 import { resizeMainPanel } from '~/redux/actions';
+import { Zoom } from '~/ui/tools/zoom-main-panel';
 
 ReactDOM.render(
     <Provider store={ store }>
@@ -12,7 +13,5 @@ ReactDOM.render(
     document.getElementById('container')
 );
 
-window.act = () => {
-
-    store.dispatch( resizeMainPanel( 888, 888 ) )
-}
+const zoom = new Zoom();
+window.zoom = zoom;

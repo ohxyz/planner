@@ -36,3 +36,8 @@ export function resizeMainPanel( width, height ) {
 
     return { type: 'main-panel/resize', width, height };
 }
+
+export function zoomMainPanel( size ) {
+
+    return { type: 'main-panel/zoom', size };
+} 
