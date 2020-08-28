@@ -18,6 +18,11 @@ export function addPlaceholder( rowIndex ) {
     return { type: 'design/add-placeholder', rowIndex };
 }
 
+export function resizeDesign( width, height ) {
+
+    return { type: 'design/resize', width, height };
+}
+
 /**
  * @param {number} rowIndex - Row index
  * @param {number} phIndex - The index of placeholder on each row.
@@ -29,5 +34,5 @@ export function removePlaceholder( rowIndex, phIndex ) {
 
 export function resizeMainPanel( width, height ) {
 
-    return { type: 'main-panel/resize', width, height }
+    return { type: 'main-panel/resize', width, height };
 }

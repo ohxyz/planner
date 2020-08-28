@@ -28,8 +28,8 @@ function DesignRow( props ) {
     const rowIndex = index;
     const style = { height: height + 'px' };
 
-    return  <div className={ css['design-row'] } style={style}>
-                <button className={ css['design-remove-row'] }
+    return  <div className={ css['row'] } style={style}>
+                <button className={ css['remove-row'] }
                         onClick={ () => onRemoveRowClick(index) } 
                 >
                 -
@@ -38,15 +38,15 @@ function DesignRow( props ) {
                 {
                     placeholders.map( (ph, idx) => 
 
-                        <ReduxedPlaceholder key={idx} id={ph.id} index={idx} rowIndex={rowIndex}/>
+                        <ReduxedPlaceholder key={idx} id={ph.id} index={idx} rowIndex={rowIndex} />
                     )
                 }
-                <button className={ css['design-add-placeholder'] }
+                <button className={ css['add-placeholder'] }
                         onClick={ () => onAddPlaceholderClick(index) }
                 >
                 +
                 </button>
-                <div className={ css['design-resize-bar'] }></div>
+                <div className={ css['resize-bar'] }></div>
             </div>
 }
 

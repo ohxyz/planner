@@ -41,7 +41,8 @@ export function undoableReducer( state=initState, action ) {
 
         return newState;
     }
-    else if ( action.type === 'design/remove-row' ) {
+    
+    if ( action.type === 'design/remove-row' ) {
 
         const rowIndex = action.index;
         const newState = utils.clone( state );
@@ -51,7 +52,8 @@ export function undoableReducer( state=initState, action ) {
 
         return newState;
     }
-    else if ( action.type === 'design/resize-row' ) {
+    
+    if ( action.type === 'design/resize-row' ) {
 
         const { index, height } = action;
         const newState = utils.clone( state );
@@ -62,7 +64,8 @@ export function undoableReducer( state=initState, action ) {
 
         return newState;
     }
-    else if ( action.type === 'design/add-placeholder' ) {
+    
+    if ( action.type === 'design/add-placeholder' ) {
 
         const { rowIndex } = action;
         const newState = utils.clone( state );
@@ -72,7 +75,8 @@ export function undoableReducer( state=initState, action ) {
 
         return newState;
     }
-    else if ( action.type === 'design/remove-placeholder' ) {
+    
+    if ( action.type === 'design/remove-placeholder' ) {
 
         const { rowIndex, phIndex } = action;
         const newState = utils.clone( state );
@@ -82,7 +86,23 @@ export function undoableReducer( state=initState, action ) {
 
         return newState;
     }
-    else if (  action.type === 'main-panel/resize' ) {
+
+    if ( action.type === 'design/resize' ) {
+
+        const newWidth = action.width;
+        const newHeight = action.height;
+        const newState = utils.clone( state );
+
+        newState.design.width = newWidth;
+        newState.design.height = newHeight;
+        // Also increase/decrease main-container's width/height
+        newState.mainPanel.width += ( newWidth - state.design.width );
+        newState.mainPanel.height += ( newHeight - state.design.height );
+
+        return newState;
+    }
+    
+    if ( action.type === 'main-panel/resize' ) {
 
         const newState = utils.clone( state )
 
@@ -91,6 +111,7 @@ export function undoableReducer( state=initState, action ) {
 
         return newState;
     }
+
 
     return state;
 }

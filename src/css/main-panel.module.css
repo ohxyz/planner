@@ -1,5 +1,6 @@
 .main-panel {
 
+    margin: 0 auto;
     background-color: #ff000010;
     display: flex;
     align-items: center;

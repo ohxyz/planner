@@ -19,9 +19,9 @@ function Placeholder( props ) {
         onRemovePlaceholderClick = () => { throw new Error('n/a') }
     } = props;
 
-    return  <div className={ css.placeholder }>
+    return  <div className={ css['placeholder'] }>
                 <b>{ id }</b>
-                <button className={ css.remove }
+                <button className={ css['remove-placeholder'] }
                         onClick={ () => onRemovePlaceholderClick( rowIndex, index ) }
                 >
                 x

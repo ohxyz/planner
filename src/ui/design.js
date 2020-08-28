@@ -43,7 +43,7 @@ class Design extends React.Component {
 
     handleMouseDown( event ) {
 
-        if ( event.target.className.includes('design-resize-bar') ) {
+        if ( event.target.className.includes('resize-bar') ) {
 
             this.activeRowElement = event.target.parentElement;
             this.activeRowIndex = this.getRowIndex( this.activeRowElement );
@@ -88,7 +88,7 @@ class Design extends React.Component {
 
         const style = { 
             width: this.props.width + 'px', 
-            minHeight: this.props.height + 'px' 
+            height: this.props.height + 'px' 
         };
 
         return  <div className={ css['design'] }
@@ -109,7 +109,7 @@ class Design extends React.Component {
                                     /> 
                         } )
                     }
-                    <button className={ css['design-add-row']} onClick={ this.props.onAddRowClick } >+</button>
+                    <button className={ css['add-row'] } onClick={ this.props.onAddRowClick } >+</button>
                 </div>
 
     }

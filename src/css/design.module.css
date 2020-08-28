@@ -5,7 +5,7 @@
     flex-direction: column;
 }
 
-.design-row {
+.row {
 
     position: relative;
     height: 30px;
@@ -17,7 +17,7 @@
     gap: 10px;
 }
 
-.design-add-row {
+.add-row {
 
     margin-top: 20px;
     margin-bottom: 20px;
@@ -25,12 +25,12 @@
     align-self: center;
 }
 
-.design-remove-row {
+.remove-row {
 
-    
+    align-self: center;
 }
 
-.design-resize-bar {
+.resize-bar {
 
     position: absolute;
     left: 0;
@@ -41,7 +41,7 @@
     cursor: n-resize;
 }
 
-.design-add-ph {
+.add-placeholder {
 
     order: 100;
     align-self: center;

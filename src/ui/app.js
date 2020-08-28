@@ -3,6 +3,7 @@ import { ReduxedDesign } from './design';
 import { store } from '~/redux/store';
 import { ActionCreators } from 'redux-undo';
 import { CompPanel } from './comp-panel';
+import { ToolBar } from './tool-bar';
 import { ReduxedMainPanel } from './main-panel';
 import { CompPanelItem as CompPanelItemModel } from '~/models';
 import css from '~/css/app.module.css';
@@ -25,7 +26,7 @@ function App() {
     }
 
     return  <div id="app" className={ css['app'] }>
-                <div className={ css['tool-bar'] }></div>
+                <ToolBar />
                 <CompPanel items={ compPanelItems } />
                 <div className={ css['prop-panel'] }></div>
                 <div className={ css['main-container'] }>
