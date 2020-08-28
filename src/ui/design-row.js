@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { removeDesignRow, addPlaceholder } from './redux/actions';
+import { removeDesignRow, addPlaceholder } from '~/redux/actions';
 import { ReduxedPlaceholder } from './placeholder';
+import css from '~/css/design.module.css';
 
 const mapDispatchToProps = dispatch => {
 
@@ -27,8 +28,8 @@ function DesignRow( props ) {
     const rowIndex = index;
     const style = { height: height + 'px' };
 
-    return  <div className="design__row" style={style}>
-                <button className="design__remove-row" 
+    return  <div className={ css['design-row'] } style={style}>
+                <button className={ css['design-remove-row'] }
                         onClick={ () => onRemoveRowClick(index) } 
                 >
                 -
@@ -40,12 +41,12 @@ function DesignRow( props ) {
                         <ReduxedPlaceholder key={idx} id={ph.id} index={idx} rowIndex={rowIndex}/>
                     )
                 }
-                <button className="design__add-placeholder"
+                <button className={ css['design-add-placeholder'] }
                         onClick={ () => onAddPlaceholderClick(index) }
                 >
                 +
                 </button>
-                <div className="design__resize-bar"></div>
+                <div className={ css['design-resize-bar'] }></div>
             </div>
 }
 

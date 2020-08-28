@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { removePlaceholder } from './redux/actions';
+import { removePlaceholder } from '~/redux/actions';
+import css from '~/css/placeholder.module.css';
 
 function mapDispatchToProps( dispatch ) {
 
@@ -18,9 +19,9 @@ function Placeholder( props ) {
         onRemovePlaceholderClick = () => { throw new Error('n/a') }
     } = props;
 
-    return  <div className="placeholder">
+    return  <div className={ css.placeholder }>
                 <b>{ id }</b>
-                <button className="placeholder__remove"
+                <button className={ css.remove }
                         onClick={ () => onRemovePlaceholderClick( rowIndex, index ) }
                 >
                 x

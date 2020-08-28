@@ -31,19 +31,13 @@ module.exports = {
                     { 
                         loader: "css-loader",
                         options: { 
-                            importLoaders: 1,
-                            modules: { auto: true }
+                            modules: { 
+                                auto: true,
+                                localIdentName: '[local]--[hash:base64:5]',
+                            }
                         }
                     }
                 ]
-            },
-            {
-                test: /\.s[ac]ss$/i,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'sass-loader',
-                ],
             }
         ]
     }

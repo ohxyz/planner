@@ -1,0 +1,7 @@
+.main-panel {
+
+    background-color: #ff000010;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { CompPanelItem } from './comp-panel-item';
-import { CompPanelItem as CompPanelItemModel } from './models';
+import { CompPanelItem as CompPanelItemModel } from '~/models';
+import css from '~/css/comp-panel.module.css';
 
 function CompPanel( props ) {
 
@@ -8,7 +9,7 @@ function CompPanel( props ) {
         items = []
     } = props;
 
-    return  <div className="comp-panel">
+    return  <div className={ css['comp-panel'] }>
             {
                 items.map( (item, idx) => 
 

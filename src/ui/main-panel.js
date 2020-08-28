@@ -1,16 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-const mapStateToProps = state => {
-
-    return {
-
-        width: state.undoable.present.mainPanel.width,
-        height: state.undoable.present.mainPanel.height
-    };
-};
-
-const ReduxedMainPanel = connect( mapStateToProps )( MainPanel );
+import css from '~/css/main-panel.module.css';
 
 function MainPanel( props ) {
 
@@ -25,9 +15,21 @@ function MainPanel( props ) {
         height: height + 'px'
     };
 
-    return  <div className="main-panel" style={style}>
+    return  <div className={ css['main-panel'] } style={style}>
                 { props.children }
             </div>
 }
+
+const mapStateToProps = state => {
+
+    return {
+
+        width: state.undoable.present.mainPanel.width,
+        height: state.undoable.present.mainPanel.height
+    };
+};
+
+const ReduxedMainPanel = connect( mapStateToProps )( MainPanel );
+
 
 export { MainPanel, ReduxedMainPanel };

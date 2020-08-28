@@ -1,7 +1,6 @@
-import './scss/index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './app';
+import { App } from './ui/app';
 import { store } from './redux/store';
 import { Provider } from 'react-redux';
 import { resizeMainPanel } from '~/redux/actions';
@@ -12,8 +11,6 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('container')
 );
-
-
 
 window.act = () => {
 

@@ -1,10 +1,11 @@
 import React from 'react';
 import { ReduxedDesign } from './design';
-import { store } from './redux/store';
+import { store } from '~/redux/store';
 import { ActionCreators } from 'redux-undo';
 import { CompPanel } from './comp-panel';
 import { ReduxedMainPanel } from './main-panel';
-import { CompPanelItem as CompPanelItemModel } from './models';
+import { CompPanelItem as CompPanelItemModel } from '~/models';
+import css from '~/css/app.module.css';
 
 const compPanelItems = [
     new CompPanelItemModel( 'Text Field' ),
@@ -23,16 +24,16 @@ function App() {
         store.dispatch( ActionCreators.redo() );
     }
 
-    return  <div id="app" className="app">
-                <div className="tool-bar"></div>
-                <CompPanel items={compPanelItems} />
-                <div className="prop-panel"></div>
-                <div className="main-container">
+    return  <div id="app" className={ css['app'] }>
+                <div className={ css['tool-bar'] }></div>
+                <CompPanel items={ compPanelItems } />
+                <div className={ css['prop-panel'] }></div>
+                <div className={ css['main-container'] }>
                     <ReduxedMainPanel>
                         <ReduxedDesign />
                     </ReduxedMainPanel>
                 </div>
-                <div className="status-bar">
+                <div className={ css['status-bar'] }>
                     <button onClick={ undo } >Undo</button>
                     <button onClick={ redo } >Redo</button>
                 </div>
