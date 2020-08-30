@@ -96,8 +96,7 @@ class Design extends React.Component {
                      onMouseDown={ this.handleMouseDown.bind(this) }
                      onMouseUp={ this.handleMouseUp.bind(this) }
                      onMouseMove={ this.handleMouseMove.bind(this) }
-                     resizable="true"
-                     resizable-factor="1"
+                     data-resizable="true"
                 >
                     {
                         this.props.rows.map( (row, idx) => {

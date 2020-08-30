@@ -8,7 +8,7 @@ import { ReduxedZoomMainPanelTool } from './tools/zoom-main-panel';
 import { UndoTool } from './tools/undo';
 import { CompPanelItem as CompPanelItemModel } from '~/models';
 import css from '~/css/app.module.css';
-import { ResizableContainer } from './resizable-container';
+import { ResizableProvider } from './resizable-provider';
 import { connect } from 'react-redux';
 import { resizeDesign } from '~/redux/actions';
 
@@ -17,7 +17,7 @@ const compPanelItems = [
     new CompPanelItemModel( 'Radio Button List' ),
 ];
 
-const ReduxedResizableContainer = connect(
+const ReduxedResizableProvider = connect(
 
     null,
 
@@ -39,27 +39,27 @@ const ReduxedResizableContainer = connect(
         }
     }
 
-)( ResizableContainer );
+)( ResizableProvider );
 
 
 function App() {
 
-    return  <div id="app" className={ css['app'] }>
-                <ToolBar />
-                <CompPanel items={ compPanelItems } />
-                <div className={ css['prop-panel'] }></div>
-                <ReduxedResizableContainer>
+    return  <ReduxedResizableProvider>
+                <div id="app" className={ css['app'] }>
+                    <ToolBar />
+                    <CompPanel items={ compPanelItems } />
+                    <div className={ css['prop-panel'] }></div>
                     <div className={ css['main-container'] }>
                         <ReduxedMainPanel>
                             <ReduxedDesign />
                         </ReduxedMainPanel>
                     </div>
-                </ReduxedResizableContainer>
-                <div className={ css['status-bar'] }>
-                    <ReduxedZoomMainPanelTool />
-                    <UndoTool />
+                    <div className={ css['status-bar'] }>
+                        <ReduxedZoomMainPanelTool />
+                        <UndoTool />
+                    </div>
                 </div>
-            </div>
+            </ReduxedResizableProvider>
 }
 
 export { App }

@@ -1,17 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Resizable } from '~/ui/resizable';
-import { ResizableContainer } from '~/ui/resizable-container';
+import { ResizableProvider } from '~/ui/resizable-provider';
 import { Placeholder } from '~/ui/placeholder';
 import css from './style.module.css';
 
 console.log( 'Test resizable' );
 
-
 ReactDOM.render(
-    <ResizableContainer>
-        <Resizable />
-        <div className={  css.my } resizable="true" resizable-factor="1" >Re</div>
-    </ResizableContainer>,
+    <ResizableProvider>
+        <div className={ css.my } data-resizable="true">Re</div>
+    </ResizableProvider>,
     document.getElementById('container')
 );

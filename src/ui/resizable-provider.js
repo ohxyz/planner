@@ -1,12 +1,11 @@
 import React from 'react';
 import dom from './dom-utils';
 
-
-class ResizableContainer extends React.Component {
+class ResizableProvider extends React.Component {
 
     static defaultProps = {
 
-        onResizeEnd: (element) => { console.log( element ) }
+        onResizeEnd: (element) => {}
     }
 
     activeResizableElement = null;
@@ -20,8 +19,6 @@ class ResizableContainer extends React.Component {
 
         super(props)
 
-        this.myRef = React.createRef();
-
         document.addEventListener( 'mousemove', this.handleMouseMove.bind(this) );
         document.addEventListener( 'mousedown', this.handleMouseDown.bind(this) );
         document.addEventListener( 'mouseup', this.handleMouseUp.bind(this) );
@@ -29,12 +26,7 @@ class ResizableContainer extends React.Component {
 
     isResizableElement( element ) {
 
-        return element.className.includes( 'resizable' ) || element.getAttribute('resizable') ;
-    }
-
-    getFactor( element ) {
-
-        return parseFloat( element.getAttribute( 'resizable-factor' ) ) || 1;
+        return element.className.includes( 'resizable' ) || element.getAttribute('data-resizable') ;
     }
 
     handleMouseDown( event ) {
@@ -54,7 +46,7 @@ class ResizableContainer extends React.Component {
         }
         else {
             // Reset mouse when curor moves off border to container
-            this.myRef.current.style.cursor = 'auto';
+            document.body.style.cursor = 'auto';
         }
 
         if ( this.activeResizableElement && this.resizeDirection !== 'none' ) {
@@ -79,10 +71,9 @@ class ResizableContainer extends React.Component {
         const height = parseFloat( style.height );
         const top = parseFloat( style.top );
         const left = parseFloat( style.left );
-        
-        const factor = this.getFactor( this.activeResizableElement );
-        const distX = factor * ( event.clientX - this.lastX );
-        const distY = factor * ( event.clientY - this.lastY );
+
+        const distX = event.clientX - this.lastX;
+        const distY = event.clientY - this.lastY;
 
         if ( direction === 'top' ) {
 
@@ -93,7 +84,7 @@ class ResizableContainer extends React.Component {
                 this.activeResizableElement.style.top = top + distY + 'px';
                 this.activeResizableElement.style.height = newHeight + 'px';
                 this.lastY = event.clientY;
-                this.myRef.current.style.cursor = 'n-resize';
+                document.body.style.cursor = 'n-resize';
             }
         }
         else if ( direction === 'bottom' ) {
@@ -104,7 +95,7 @@ class ResizableContainer extends React.Component {
 
                 this.activeResizableElement.style.height = newHeight + 'px';
                 this.lastY = event.clientY;
-                this.myRef.current.style.cursor = 's-resize';
+                document.body.style.cursor = 's-resize';
             }
         }
         else if ( direction === 'left' ) {
@@ -116,7 +107,7 @@ class ResizableContainer extends React.Component {
                 this.activeResizableElement.style.left = left + distX + 'px';
                 this.activeResizableElement.style.width = newWidth + 'px';
                 this.lastX = event.clientX;
-                this.myRef.current.style.cursor = 'w-resize';
+                document.body.style.cursor = 'w-resize';
             }
         }
         else if ( direction === 'right' ) {
@@ -127,11 +118,11 @@ class ResizableContainer extends React.Component {
                 
                 this.activeResizableElement.style.width = newWidth + 'px';
                 this.lastX = event.clientX;
-                this.myRef.current.style.cursor = 'e-resize';
+                document.body.style.cursor = 'e-resize';
             }
         }
 
-        this.myRef.current.style.userSelect = 'none';
+        document.body.style.userSelect = 'none';
     }
 
     handleResizeStart( event ) {
@@ -143,22 +134,22 @@ class ResizableContainer extends React.Component {
         if ( dom.isInRect( cursorX, cursorY, borderRects.top ) ) {
 
             this.resizeDirection = 'top';
-            this.myRef.current.style.userSelect = 'none';
+            document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.right ) ) {
             
             this.resizeDirection = 'right';
-            this.myRef.current.style.userSelect = 'none';
+            document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.bottom ) ) {
             
             this.resizeDirection = 'bottom';
-            this.myRef.current.style.userSelect = 'none';
+            document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.left ) ) {
             
             this.resizeDirection = 'left'
-            this.myRef.current.style.userSelect = 'none';
+            document.body.style.userSelect = 'none';
         }
         else {
             
@@ -174,7 +165,7 @@ class ResizableContainer extends React.Component {
 
         this.props.onResizeEnd( this.activeResizableElement );
         this.activeResizableElement = null;
-        this.myRef.current.style.userSelect = 'auto';
+        document.body.style.userSelect = 'auto';
     }
 
     handleCursorStyle( event ) {
@@ -184,42 +175,26 @@ class ResizableContainer extends React.Component {
         const cursorY = event.clientY;
 
         if ( dom.isInRect( cursorX, cursorY, borderRects.top ) ) {
-            this.myRef.current.style.cursor = 'n-resize';
+            document.body.style.cursor = 'n-resize';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.right ) ) {
-            this.myRef.current.style.cursor = 'e-resize';
+            document.body.style.cursor = 'e-resize';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.bottom ) ) {
-            this.myRef.current.style.cursor = 's-resize';
+            document.body.style.cursor = 's-resize';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.left ) ) {
-            this.myRef.current.style.cursor = 'w-resize';
+            document.body.style.cursor = 'w-resize';
         }
         else {
-            this.myRef.current.style.cursor = 'auto';
+            document.body.style.cursor = 'auto';
         }
     }
 
     render() {
 
-        // debug
-        const style = {
-            
-            width: '100px',
-            height: '100px',
-            backgroundColor: '#00ff0030',
-        };
-
-        return (
-
-        <div style={ style } 
-             ref={ this.myRef }
-        >
-            { this.props.children }
-        </div>
-        
-        )
+        return this.props.children;
     }
 }
 
-export { ResizableContainer };
+export { ResizableProvider };
