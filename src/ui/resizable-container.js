@@ -1,7 +1,13 @@
 import React from 'react';
 import dom from './dom-utils';
 
+
 class ResizableContainer extends React.Component {
+
+    static defaultProps = {
+
+        onResizeEnd: (element) => { console.log( element ) }
+    }
 
     activeResizableElement = null;
     resizeDirection = 'none';
@@ -59,8 +65,10 @@ class ResizableContainer extends React.Component {
 
     handleMouseUp( event ) {
 
-        this.activeResizableElement = null;
-        this.myRef.current.style.userSelect = 'auto';
+        if ( this.activeResizableElement ) {
+            
+            this.handleResizeEnd();
+        }
     }
 
     handleResize( event, direction ) {
@@ -162,6 +170,13 @@ class ResizableContainer extends React.Component {
 
     }
 
+    handleResizeEnd() {
+
+        this.props.onResizeEnd( this.activeResizableElement );
+        this.activeResizableElement = null;
+        this.myRef.current.style.userSelect = 'auto';
+    }
+
     handleCursorStyle( event ) {
 
         const borderRects = dom.getBorderRects( event.target );
@@ -207,7 +222,4 @@ class ResizableContainer extends React.Component {
     }
 }
 
-export {
-
-    ResizableContainer
-}
+export { ResizableContainer };
