@@ -41,9 +41,13 @@ const ReduxedResizeDesignTool = connect(
 
     state => {
 
+        const width = state.undoable.present.design.width;
+        const height = state.undoable.present.design.height;
+
         return {
-            width: state.undoable.present.design.width,
-            height: state.undoable.present.design.height,
+            width,
+            height,
+            key: width + ',' + height
         };
     },
 

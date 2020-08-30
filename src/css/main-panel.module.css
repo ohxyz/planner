@@ -1,8 +1,12 @@
 .main-panel {
 
     margin: 0 auto;
-    background-color: #ff000010;
-    display: flex;
+
+/*    display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center;*/
+    background-color: #ff000010;
+    border: 5px solid #00000099;
+    /* Use top left, other value may cause some content not visible */
+    transform-origin: top left;
 }

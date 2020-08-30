@@ -113,13 +113,5 @@ export function undoableReducer( state=initState, action ) {
         return newState;
     }
 
-    // if ( action.type === 'main-panel/zoom' ) {
-
-    //     const newState = utils.clone( state );
-    //     newState.mainPanel.zoom = action.size;
-
-    //     return newState;
-    // }
-
     return state;
 }

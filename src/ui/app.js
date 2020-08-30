@@ -1,12 +1,15 @@
 import React from 'react';
 import { ReduxedDesign } from './design';
 import { store } from '~/redux/store';
-import { ActionCreators } from 'redux-undo';
 import { CompPanel } from './comp-panel';
 import { ToolBar } from './tool-bar';
 import { ReduxedMainPanel } from './main-panel';
+import { ReduxedZoomMainPanelTool } from './tools/zoom-main-panel';
+import { UndoTool } from './tools/undo';
 import { CompPanelItem as CompPanelItemModel } from '~/models';
 import css from '~/css/app.module.css';
+import { ResizableContainer } from './resizable-container';
+
 
 const compPanelItems = [
     new CompPanelItemModel( 'Text Field' ),
@@ -15,28 +18,20 @@ const compPanelItems = [
 
 function App() {
 
-    function undo() {
-
-        store.dispatch( ActionCreators.undo() );
-    }
-
-    function redo() {
-
-        store.dispatch( ActionCreators.redo() );
-    }
-
     return  <div id="app" className={ css['app'] }>
                 <ToolBar />
                 <CompPanel items={ compPanelItems } />
                 <div className={ css['prop-panel'] }></div>
-                <div className={ css['main-container'] }>
-                    <ReduxedMainPanel>
-                        <ReduxedDesign />
-                    </ReduxedMainPanel>
-                </div>
+                <ResizableContainer>
+                    <div className={ css['main-container'] }>
+                        <ReduxedMainPanel>
+                            <ReduxedDesign />
+                        </ReduxedMainPanel>
+                    </div>
+                </ResizableContainer>
                 <div className={ css['status-bar'] }>
-                    <button onClick={ undo } >Undo</button>
-                    <button onClick={ redo } >Redo</button>
+                    <ReduxedZoomMainPanelTool />
+                    <UndoTool />
                 </div>
             </div>
 }

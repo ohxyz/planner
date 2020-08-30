@@ -4,7 +4,8 @@
   "description": "A basic setup of React development environment",
   "scripts": {
     "build": "webpack --config webpack.dev.js",
-    "dev": "webpack-dev-server --config webpack.dev.js --open"
+    "dev": "webpack-dev-server --config webpack.dev.js",
+    "test": "webpack-dev-server --config webpack.test.js"
   },
   "author": "Ohxyz",
   "license": "MIT",

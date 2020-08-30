@@ -14,7 +14,7 @@ function MainPanel( props ) {
 
         width: width + 'px',
         height: height + 'px',
-        transform: `scale(${zoom})`
+        transform: `scale(${zoom})`,
     };
 
     return  <div className={ css['main-panel'] } style={style}>
@@ -32,7 +32,4 @@ const mapStateToProps = state => {
     };
 };
 
-const ReduxedMainPanel = connect( mapStateToProps )( MainPanel );
-
-
-export { MainPanel, ReduxedMainPanel };
+export const ReduxedMainPanel = connect( mapStateToProps )( MainPanel );

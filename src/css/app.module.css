@@ -36,7 +36,6 @@
     flex-wrap: wrap;
 }
 
-
 .status-bar {
 
     position: absolute;
@@ -45,6 +44,7 @@
     right: 0;
     bottom: 0;
     height: var(--status-bar-height);
+    display: flex;
     z-index: 1000;
 }
 

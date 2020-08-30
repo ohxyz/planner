@@ -1,42 +1,105 @@
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { store } from '~/redux/store';
 import { zoomMainPanel } from '~/redux/actions';
 
-class Zoom {
+class MainPanelZoomer {
 
-    constructor( size=1, step=0.1 ) {
+    constructor() {
 
-        this.size = size;
-        this.step = step;
+        this.step = 0.1
+        this.shouldOverrideDefault = true;
         this.min = 0.1;
         this.max = 10;
+
+        this.init();
     }
 
     init() {
 
+        // Override default browser's zoom in/out
+        if ( this.shouldOverrideDefault ) {
+
+            window.addEventListener( 'wheel', this.handleWheel.bind(this), { passive: false } );
+            window.addEventListener( 'keydown', this.handleKeyDown.bind(this) );
+        }
+    }
+
+    handleWheel( event ) {
+
+        if ( event.ctrlKey === true ) {
+            
+            event.preventDefault();
+
+            if ( event.deltaY > 0 ) {
+
+                this.out();
+            }
+            else if ( event.deltaY < 0 ) {
+
+                this.in();
+            }
+        }
+    }
+
+    handleKeyDown( event ) {
+
+        if ( event.ctrlKey === true ) {
+
+            // Ctrl and 0, keyboard number pad not tested
+            if ( event.keyCode === 48 ) {
+
+                // Only when both keys are pressed, otherwise e.g Ctrl+R won't work
+                event.preventDefault();
+                this.reset();
+            }
+            // Ctrl and -
+            else if ( event.keyCode === 189 ) {
+
+                event.preventDefault();
+                this.out();
+            }
+            // Ctrl and + 
+            else if ( event.keyCode === 187 ) {
+
+                event.preventDefault();
+                this.in();
+            }
+        }
+    }
+
+    getCurrentSize() {
+
+        return store.getState().mainPanel.zoom;
+    }
+
+    reset() {
+
+        store.dispatch( zoomMainPanel(1) );
     }
 
     in() {
 
-        if ( this.size >= this.max ) {
+        let size = this.getCurrentSize();
+
+        if ( size >= this.max ) {
             return;
         }
 
-        this.size += this.step;
-        store.dispatch( zoomMainPanel(this.size) );
-
-        return this.size;
+        size += this.step;
+        store.dispatch( zoomMainPanel(size) );
     }
 
     out() {
 
-        if ( this.size <= this.min ) {
+        let size = this.getCurrentSize();
+
+        if ( size <= this.min ) {
             return;
         }
 
-        this.size -= this.step;
-        store.dispatch( zoomMainPanel(this.size) );
-
-        return this.size;
+        size -= this.step;
+        store.dispatch( zoomMainPanel(size) );
     }
 
     to( size ) {
@@ -45,11 +108,85 @@ class Zoom {
             return;
         }
 
-        this.size = size;
-        store.dispatch( zoomMainPanel(this.size) );
+        store.dispatch( zoomMainPanel(size) );
     }
 }
 
 
+class ZoomMainPanelTool extends React.Component {
 
-export { Zoom }
+    constructor( props ) {
+
+        super(props);
+
+        this.state = {
+            inputValue: ZoomMainPanelTool.format( this.props.zoom )
+        };
+    }
+
+    static format( number ) {
+
+        return parseInt( number * 100 ) + '%';
+    }
+
+    handleInputChange( event ) {
+
+        this.setState( { inputValue: event.target.value } );
+    }
+
+    handleKeyUp( event ) {
+
+        if ( event.keyCode === 13 ) {
+
+            const size = parseFloat(event.target.value) / 100;
+            this.props.onZoomChange( size );
+        }
+    }
+
+    handleInputBlur( event ) {
+
+        this.setState( { inputValue: ZoomMainPanelTool.format( this.props.zoom ) } )
+    }
+
+    render() { 
+
+        return (
+            
+        <div>
+            <label>
+                Zoom
+                <input type="text" 
+                       size="5" 
+                       value={ this.state.inputValue }
+                       onKeyUp={ this.handleKeyUp.bind(this) } 
+                       onChange={ this.handleInputChange.bind(this) }
+                       onBlur={ this.handleInputBlur.bind(this) }
+                />
+            </label>
+        </div>
+
+        );
+    }
+}
+
+const ReduxedZoomMainPanelTool = connect(
+
+    state => {
+
+        return {
+            zoom: state.mainPanel.zoom,
+            // Use a key for React to recreate the component, rather than update
+            key: state.mainPanel.zoom
+        };
+    },
+
+    dispatch => {
+
+        return {
+            onZoomChange: ( size ) => dispatch( zoomMainPanel(size) )
+        }
+    }
+
+)( ZoomMainPanelTool );
+
+export { MainPanelZoomer, ReduxedZoomMainPanelTool }
