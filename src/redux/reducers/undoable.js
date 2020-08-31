@@ -1,6 +1,14 @@
 import utils from '~/utils';
 import { Row, Placeholder } from '~/models';
 
+const defaults = {
+
+    mainPanelWidth: 800,
+    mainPanelHeight: 800,
+    designWidth: 500,
+    designHeight: 500,
+};
+
 const initState = {
 
     // {
@@ -21,13 +29,13 @@ const initState = {
         rows: [ 
             new Row( 'row-0' )
         ],
-        width: 500,
-        height: 500,
+        width: defaults.designWidth,
+        height: defaults.designHeight,
+        borderWidth: defaults.designBorderWidth,
     },
     mainPanel: {
-        width: 800,
-        height: 800,
-        zoom: 1,
+        width: defaults.mainPanelWidth,
+        height: defaults.mainPanelHeight,
     },
     foo: 'bar'
 }

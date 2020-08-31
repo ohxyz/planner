@@ -12,6 +12,8 @@ class MainPanelZoomer {
         this.min = 0.1;
         this.max = 10;
 
+        this.__requireRedraw = true;
+
         this.init();
     }
 
@@ -75,31 +77,23 @@ class MainPanelZoomer {
 
     reset() {
 
-        store.dispatch( zoomMainPanel(1) );
+        this.to(1);
     }
 
     in() {
 
         let size = this.getCurrentSize();
 
-        if ( size >= this.max ) {
-            return;
-        }
-
         size += this.step;
-        store.dispatch( zoomMainPanel(size) );
+        this.to( size );
     }
 
     out() {
 
         let size = this.getCurrentSize();
 
-        if ( size <= this.min ) {
-            return;
-        }
-
         size -= this.step;
-        store.dispatch( zoomMainPanel(size) );
+        this.to( size );
     }
 
     to( size ) {
@@ -109,6 +103,18 @@ class MainPanelZoomer {
         }
 
         store.dispatch( zoomMainPanel(size) );
+
+        // Force Chrome to redraw, so the scrollbar will appear when zoom in/out
+        // Firefox is fine
+        if ( this.__requireRedraw ) {
+
+            const elem = document.createElement( 'div' );
+            document.body.appendChild( elem );
+
+            setTimeout( () => elem.remove(), 20 );
+
+            this.__requireRedraw = false;
+        }
     }
 }
 

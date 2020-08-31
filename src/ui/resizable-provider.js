@@ -5,7 +5,9 @@ class ResizableProvider extends React.Component {
 
     static defaultProps = {
 
-        onResizeEnd: (element) => {}
+        onResizeStart: element => {},
+        onResize: element => {},
+        onResizeEnd: element => {}
     }
 
     activeResizableElement = null;
@@ -27,6 +29,11 @@ class ResizableProvider extends React.Component {
     isResizableElement( element ) {
 
         return element.className.includes( 'resizable' ) || element.getAttribute('data-resizable') ;
+    }
+
+    getFactor( element ) {
+
+        return parseFloat( element.getAttribute('data-resizable-factor') ) || 1;
     }
 
     handleMouseDown( event ) {
@@ -71,9 +78,9 @@ class ResizableProvider extends React.Component {
         const height = parseFloat( style.height );
         const top = parseFloat( style.top );
         const left = parseFloat( style.left );
-
-        const distX = event.clientX - this.lastX;
-        const distY = event.clientY - this.lastY;
+        const factor = this.getFactor( this.activeResizableElement );
+        const distX = factor * ( event.clientX - this.lastX );
+        const distY = factor * ( event.clientY - this.lastY );
 
         if ( direction === 'top' ) {
 
@@ -123,6 +130,9 @@ class ResizableProvider extends React.Component {
         }
 
         document.body.style.userSelect = 'none';
+
+        this.props.onResize( this.activeResizableElement );
+
     }
 
     handleResizeStart( event ) {
@@ -158,6 +168,8 @@ class ResizableProvider extends React.Component {
 
         this.lastX = cursorX;
         this.lastY = cursorY;
+
+        this.props.onResizeStart( this.activeResizableElement );
 
     }
 

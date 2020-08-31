@@ -5,8 +5,8 @@ import css from '~/css/main-panel.module.css';
 function MainPanel( props ) {
 
     const {
-        width = 800,
-        height = 800,
+        width = 100,
+        height = 100,
         zoom = 1,
     } = props;
 

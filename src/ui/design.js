@@ -11,6 +11,7 @@ class Design extends React.Component {
         rows: [],
         width: 100,
         height: 100,
+        zoomFactor: 1,
         onAddRowClick: () => { throw new Error( 'n/a' ) },
         onResizeRowFinish: ( index, height ) => { throw new Error( 'n/a' ) }
     };
@@ -88,7 +89,7 @@ class Design extends React.Component {
 
         const style = { 
             width: this.props.width + 'px', 
-            height: this.props.height + 'px' 
+            height: this.props.height + 'px',
         };
 
         return  <div className={ css['design'] }
@@ -97,6 +98,7 @@ class Design extends React.Component {
                      onMouseUp={ this.handleMouseUp.bind(this) }
                      onMouseMove={ this.handleMouseMove.bind(this) }
                      data-resizable="true"
+                     data-resizable-factor={ this.props.zoomFactor }
                 >
                     {
                         this.props.rows.map( (row, idx) => {
@@ -121,7 +123,8 @@ const mapStateToProps = state => {
     return {
         width: state.undoable.present.design.width,
         height: state.undoable.present.design.height,
-        rows: state.undoable.present.design.rows
+        rows: state.undoable.present.design.rows,
+        zoomFactor: 2 / state.mainPanel.zoom
     };
 };
 
