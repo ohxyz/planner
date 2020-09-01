@@ -28,12 +28,19 @@ class ResizableProvider extends React.Component {
 
     isResizableElement( element ) {
 
-        return element.className.includes( 'resizable' ) || element.getAttribute('data-resizable') ;
+        return element.className.includes( 'resizable' ) || element.getAttribute( 'resizable' );
     }
 
-    getFactor( element ) {
+    getResizeFactor( element ) {
 
-        return parseFloat( element.getAttribute('data-resizable-factor') ) || 1;
+        return parseFloat( element.getAttribute( 'resizable-factor' ) ) || 1;
+    }
+
+    // Styles are: absolute, margin, default
+    // default only updates width and height
+    getResizeStyle( element ) {
+
+        return element.getAttribute( 'resizable-style' ) || 'default';
     }
 
     handleMouseDown( event ) {
@@ -73,12 +80,37 @@ class ResizableProvider extends React.Component {
     handleResize( event, direction ) {
 
         const style = window.getComputedStyle( this.activeResizableElement );
+
+        if ( style.position !== 'static' && style.position !== 'absolute' ) {
+
+            throw new Error( "Resizable's position must be `static` or `absolute`" );
+        }
+
+        const resizeStyle = this.getResizeStyle( this.activeResizableElement );
+
+        console.log( resizeStyle )
        
         const width = parseFloat( style.width );
         const height = parseFloat( style.height );
+
         const top = parseFloat( style.top );
         const left = parseFloat( style.left );
-        const factor = this.getFactor( this.activeResizableElement );
+
+        const marginLeft = parseFloat( style.marginLeft );
+        const marginTop = parseFloat( style.marginTop );
+        const marginRight = parseFloat( style.marginRight );
+        const marginBottom = parseFloat( style.marginBottom );
+
+        // Reset with all calculated value, in the case margin is set to `auto`
+        if ( style.position === 'static' && resizeStyle === 'margin' ) {
+
+            this.activeResizableElement.style.marginLeft = marginLeft + 'px';
+            this.activeResizableElement.style.marginTop = marginTop + 'px';
+            this.activeResizableElement.style.marginBottom = marginBottom + 'px';
+            this.activeResizableElement.style.marginRight = marginRight + 'px';
+        }
+
+        const factor = this.getResizeFactor( this.activeResizableElement );
         const distX = factor * ( event.clientX - this.lastX );
         const distY = factor * ( event.clientY - this.lastY );
 
@@ -88,10 +120,38 @@ class ResizableProvider extends React.Component {
 
             if ( newHeight >= this.minHeight ) {
 
-                this.activeResizableElement.style.top = top + distY + 'px';
+                if ( style.position === 'absolute' && resizeStyle === 'absolute' ) {
+
+                    this.activeResizableElement.style.top = top + distY + 'px';
+                }
+                else if ( style.position === 'static' && resizeStyle === 'margin' ) {
+
+                    this.activeResizableElement.style.marginTop = marginTop + distY + 'px';
+                }
+
                 this.activeResizableElement.style.height = newHeight + 'px';
                 this.lastY = event.clientY;
                 document.body.style.cursor = 'n-resize';
+            }
+        }
+        else if ( direction === 'left' ) {
+
+            const newWidth = width - distX;
+
+            if ( newWidth >= this.minWidth ) {
+
+                if ( style.position === 'absolute' && resizeStyle === 'absolute' ) {
+
+                    this.activeResizableElement.style.left = left + distX + 'px';
+                }
+                else if ( style.position === 'static' && resizeStyle === 'margin') {
+
+                    this.activeResizableElement.style.marginLeft = marginLeft + distX + 'px';
+                }
+
+                this.activeResizableElement.style.width = newWidth + 'px';
+                this.lastX = event.clientX;
+                document.body.style.cursor = 'w-resize';
             }
         }
         else if ( direction === 'bottom' ) {
@@ -103,18 +163,6 @@ class ResizableProvider extends React.Component {
                 this.activeResizableElement.style.height = newHeight + 'px';
                 this.lastY = event.clientY;
                 document.body.style.cursor = 's-resize';
-            }
-        }
-        else if ( direction === 'left' ) {
-
-            const newWidth = width - distX;
-
-            if ( newWidth >= this.minWidth ) {
-                
-                this.activeResizableElement.style.left = left + distX + 'px';
-                this.activeResizableElement.style.width = newWidth + 'px';
-                this.lastX = event.clientX;
-                document.body.style.cursor = 'w-resize';
             }
         }
         else if ( direction === 'right' ) {

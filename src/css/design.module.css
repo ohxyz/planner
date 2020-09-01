@@ -1,12 +1,10 @@
 .design {
 
-    /* border-width likely to be overriden */
     border-width: 5px;
     border-style: solid; 
     border-color: #0000ff50;
     display: flex;
     flex-direction: column;
-    margin: 0 auto;
     /* Use flex: none. So it can go out of it's container when resize */
     flex: none;
 }

@@ -11,6 +11,7 @@ module.exports = {
         contentBase: __dirname + '/public',
         compress: true,
         port: 5000,
+        open: true
     },
     resolve: {
         alias: {
