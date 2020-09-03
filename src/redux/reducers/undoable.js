@@ -1,5 +1,5 @@
 import utils from '~/utils';
-import { Row, Placeholder } from '~/models';
+import { Row, Placeholder, CompHolder } from '~/models';
 
 const defaults = {
 
@@ -36,6 +36,12 @@ const initState = {
     mainPanel: {
         width: defaults.mainPanelWidth,
         height: defaults.mainPanelHeight,
+    },
+    mainContainer: {
+        compHolders: [
+            new CompHolder( {top: 50, left: 50 } ),
+            new CompHolder( {top: 150, left: 100 } ),
+        ]
     },
     foo: 'bar'
 }
@@ -117,6 +123,16 @@ export function undoableReducer( state=initState, action ) {
 
         newState.mainPanel.width = action.width;
         newState.mainPanel.height = action.height;
+
+        return newState;
+    }
+
+    if ( action.type === 'comp-holder/drag' ) {
+
+        const newState = utils.clone( state );
+        const compHolder = newState.mainContainer.compHolders[ action.index ];
+        compHolder.top = action.pos.top;
+        compHolder.left = action.pos.left;
 
         return newState;
     }

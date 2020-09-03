@@ -40,4 +40,9 @@ export function resizeMainPanel( width, height ) {
 export function zoomMainPanel( size ) {
 
     return { type: 'main-panel/zoom', size };
-} 
+}
+
+export function dragCompHolder( index, pos ) {
+
+    return { type: 'comp-holder/drag', index, pos };
+}

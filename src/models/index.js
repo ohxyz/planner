@@ -16,3 +16,9 @@ export function CompPanelItem( name ) {
 
     this.name = name;
 }
+
+export function CompHolder( { top, left } ) {
+
+    this.top = top;
+    this.left = left;
+}

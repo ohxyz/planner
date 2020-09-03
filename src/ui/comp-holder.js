@@ -5,31 +5,38 @@ function CompHolder( props ) {
 
     const { 
         top = 0, 
-        left = 0, 
+        left = 0,
+        onDragEnd = () => { throw new Error( 'n/a' ) }
     } = props;
 
-    const [ pos, setPos ] = useState( { x:left, y:top } );
+    let startX;
+    let startY;
 
-    const style = {
+    const style = { top, left };
 
-        top: pos.y + 'px',
-        left: pos.x + 'px'
-    };
+    function handleDragStart( event ) {
+
+        startX = event.clientX;
+        startY = event.clientY;
+    }
 
     function handleDragEnd( event ) {
 
-        // console.log( event.clientX, event.clientY );
+        const shiftX = event.clientX - startX;
+        const shiftY = event.clientY - startY;
 
-        console.log( event.nativeEvent.offsetX );
-        setPos( { x: event.nativeEvent.offsetX, y: event.nativeEvent.offsetY } );
+        onDragEnd( { 
+            top: top + shiftY,
+            left: left + shiftX
+        } );
     }
 
-    return  <div className={ css['comp-holder'] } 
+    return  <div className={ css['comp-holder'] }
                  style={ style }
+                 onDragStart={ handleDragStart }
                  onDragEnd={ handleDragEnd }
-                 draggable="true"
+                 draggable
             >
-
             </div>
 
 }

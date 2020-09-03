@@ -21,6 +21,7 @@ class DnrProvider {
         this.onResizeStart = onResizeStart;
         this.onResize = onResize;
         this.onResizeEnd = onResizeEnd;
+        this.defaultCursorStyle = window.getComputedStyle( document.body ).cursor;
     }
 
     init() {
@@ -40,10 +41,16 @@ class DnrProvider {
         return element.getAttribute( 'dnr-state' );
     }
 
-    isResizableElement( element ) {
+    isResizable( element ) {
 
         const attr = element.getAttribute( 'dnr' );
         return [ 'resize', 'true' ].indexOf( attr ) >= 0;
+    }
+
+    isDraggable( element ) {
+
+        const attr = element.getAttribute( 'dnr' );
+        return [ 'drag', 'true' ].indexOf( attr ) >= 0;
     }
 
     getResizeFactor( element ) {
@@ -58,34 +65,48 @@ class DnrProvider {
         return element.getAttribute( 'dnr-resize-style' ) || 'default';
     }
 
+    getDragStyle( element ) {
+
+        return element.getAttribute( 'dnr-drag-style' ) || 'absolute';
+    }
+
     handleMouseDown( event ) {
 
-        if ( this.isResizableElement(event.target) ) {
+        if ( this.isResizable(event.target) ) {
 
-            this.activeElement = event.target;
             this.handleResizeStart( event );
+        }
+
+        if ( this.isDraggable(event.target) ) {
+
+            this.handleDragStart( event );
         }
     }
 
     handleMouseMove( event ) {
 
-        if ( this.isResizableElement( event.target ) ) {
+        if ( this.isResizable( event.target ) ) {
             
             this.handleCursorStyle( event );
         }
         else {
-            // Reset mouse when curor moves off border to container
-            document.body.style.cursor = 'auto';
+            // Reset mouse when curor moves off the border
+            document.body.style.cursor = this.defaultCursorStyle;
         }
 
         if ( this.activeElement ) {
 
             const dnrState = this.getDnrState( this.activeElement );
 
+            // dnrState can be `resize-top`, `resize-left`, etc
             if ( dnrState.includes('resize') ) {
 
                 const resizeDirection = dnrState.split('-')[1];
                 this.handleResize( event, resizeDirection );
+            }
+            else if ( dnrState === 'drag' ) {
+
+                this.handleDrag( event );
             }
         }
     }
@@ -93,8 +114,17 @@ class DnrProvider {
     handleMouseUp( event ) {
 
         if ( this.activeElement ) {
+
+            const dnrState = this.getDnrState(this.activeElement);
             
-            this.handleResizeEnd();
+            if ( dnrState.includes( 'resize' ) ) {
+
+                this.handleResizeEnd();
+            }
+            else if ( dnrState === 'drag' ) {
+
+                this.handleDragEnd();
+            }
         }
     }
 
@@ -198,11 +228,12 @@ class DnrProvider {
         document.body.style.userSelect = 'none';
 
         this.onResize( this.activeElement );
-
     }
 
     handleResizeStart( event ) {
 
+        this.activeElement = event.target;
+        
         const borderRects = dom.getBorderRects( this.activeElement );
         const cursorX = event.clientX;
         const cursorY = event.clientY;
@@ -210,22 +241,18 @@ class DnrProvider {
         if ( dom.isInRect( cursorX, cursorY, borderRects.top ) ) {
 
             this.setDnrState( this.activeElement, 'resize-top' );
-            document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.right ) ) {
             
             this.setDnrState( this.activeElement, 'resize-right' );
-            document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.bottom ) ) {
             
             this.setDnrState( this.activeElement, 'resize-bottom' );
-            document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.left ) ) {
             
             this.setDnrState( this.activeElement, 'resize-left' );
-            document.body.style.userSelect = 'none';
         }
         else {
 
@@ -236,12 +263,12 @@ class DnrProvider {
         this.lastY = cursorY;
 
         this.onResizeStart( this.activeElement );
-
     }
 
     handleResizeEnd() {
 
         this.onResizeEnd( this.activeElement );
+        this.setDnrState( this.activeElement, 'static' );
         this.activeElement = null;
         document.body.style.userSelect = 'auto';
     }
@@ -265,8 +292,59 @@ class DnrProvider {
             document.body.style.cursor = 'w-resize';
         }
         else {
-            document.body.style.cursor = 'auto';
+            document.body.style.cursor = this.defaultCursorStyle;
         }
+    }
+
+    handleDragStart( event ) {
+
+        const innerRect = dom.getInnerRect( event.target );
+
+        if ( dom.isInRect( event.clientX, event.clientY, innerRect ) ) {
+
+            this.activeElement = event.target;
+            this.setDnrState( this.activeElement, 'drag' );
+            document.body.style.cursor = 'move';
+        }
+    }
+
+    handleDrag( event ) {
+
+        const distX = event.clientX - this.lastX;
+        const distY = event.clientY - this.lastY;
+
+        const style = window.getComputedStyle( this.activeElement );
+        const dragStyle = this.getDragStyle( this.activeElement );
+
+        if ( dragStyle === 'absolute' && style.position === 'absolute' ) {
+
+            const x = parseFloat( style.left );
+            const y = parseFloat( style.top );
+
+            this.activeElement.style.top = y + distY + 'px' ;
+            this.activeElement.style.left = x + distX + 'px';
+        }
+        else if ( dragStyle === 'margin' ) {
+
+            const marginLeft = parseFloat( style.marginLeft );
+            const marginTop = parseFloat( style.marginTop );
+
+            this.activeElement.style.marginTop = marginTop + distY + 'px' ;
+            this.activeElement.style.marginLeft = marginLeft + distX + 'px';
+        }
+
+        this.lastX = event.clientX;
+        this.lastY = event.clientY;
+
+        document.body.style.userSelect = 'none';
+        document.body.style.cursor = 'move';
+    }
+
+    handleDragEnd() {
+
+        this.setDnrState( this.activeElement, 'static' );
+        this.activeElement = null;
+        document.body.style.userSelect = 'auto';
     }
 }
 

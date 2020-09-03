@@ -59,6 +59,28 @@ function getBorderRects( element ) {
     };
 }
 
+function getInnerRect( element ) {
+
+    const rect = element.getBoundingClientRect();
+    const { x, y, width, height, right, bottom } = rect;
+    const style = window.getComputedStyle( element );
+
+    const left = x + parseFloat( style.borderLeftWidth );
+    const top = y + parseFloat( style.borderTopWidth );
+
+    return {
+
+        x: left,
+        y: top,
+        width: parseFloat( style.width ),
+        height: parseFloat( style.height ),
+        left,
+        top,
+        right: right - parseFloat( style.borderRightWidth ),
+        bottom: bottom - parseFloat( style.borderBottomWidth )
+    };
+}
+
 function isInRect( x, y, rect ) {
 
     return ( x >= rect.x && x <= rect.x + rect.width ) && ( y >= rect.y && y <= rect.y + rect.height );
@@ -68,5 +90,6 @@ export default {
 
     getBorders,
     getBorderRects,
+    getInnerRect,
     isInRect,
 };
