@@ -1,9 +1,7 @@
 import React from 'react';
-import { ReduxedDesign } from './design';
 import { store } from '~/redux/store';
 import { CompPanel } from './comp-panel';
 import { ToolBar } from './tool-bar';
-import { ReduxedMainPanel } from './main-panel';
 import { ReduxedZoomMainPanelTool } from './tools/zoom-main-panel';
 import { UndoTool } from './tools/undo';
 import { CompPanelItem as CompPanelItemModel } from '~/models';
@@ -11,6 +9,7 @@ import css from '~/css/app.module.css';
 import { ResizableProvider } from './resizable-provider';
 import { connect } from 'react-redux';
 import { resizeDesign } from '~/redux/actions';
+import { MainContainer } from './main-container';
 
 const compPanelItems = [
     new CompPanelItemModel( 'Text Field' ),
@@ -49,11 +48,7 @@ function App() {
                     <ToolBar />
                     <CompPanel items={ compPanelItems } />
                     <div className={ css['prop-panel'] }></div>
-                    <div className={ css['main-container'] }>
-                        <ReduxedMainPanel>
-                            <ReduxedDesign />
-                        </ReduxedMainPanel>
-                    </div>
+                    <MainContainer />
                     <div className={ css['status-bar'] }>
                         <ReduxedZoomMainPanelTool />
                         <UndoTool />

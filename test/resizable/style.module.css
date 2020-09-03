@@ -19,9 +19,18 @@
     margin-left: auto;
     margin-right: auto;
     margin-top: 120px;
-
-
     background-color: #0000ff50;
     border: 5px #00000050 solid;
 
+}
+
+.my3 {
+
+    width: 100px;
+    height: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    background-color: #00ff0050;
+    border: 5px #00000050 solid;
 }

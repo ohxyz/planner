@@ -1,53 +1,68 @@
 import React from 'react';
 import dom from './dom-utils';
 
-class ResizableProvider extends React.Component {
+class DnrProvider {
 
-    static defaultProps = {
-
-        onResizeStart: element => {},
-        onResize: element => {},
-        onResizeEnd: element => {}
-    }
-
-    activeResizableElement = null;
+    activeElement = null;
     resizeDirection = 'none';
     lastX;
     lastY;
     minHeight = 10;
     minWidth = 10;
 
-    constructor( props ) {
+    constructor( args = {} ) {
 
-        super(props)
+        const {
+            onResizeEnd = element => {},
+            onResize = element => {},
+            onResizeStart = element => {}
+        } = args;
+
+        this.onResizeStart = onResizeStart;
+        this.onResize = onResize;
+        this.onResizeEnd = onResizeEnd;
+    }
+
+    init() {
 
         document.addEventListener( 'mousemove', this.handleMouseMove.bind(this) );
         document.addEventListener( 'mousedown', this.handleMouseDown.bind(this) );
         document.addEventListener( 'mouseup', this.handleMouseUp.bind(this) );
     }
 
+    setDnrState( element, state ) {
+
+        element.setAttribute( 'dnr-state', state );
+    }
+
+    getDnrState( element ) {
+
+        return element.getAttribute( 'dnr-state' );
+    }
+
     isResizableElement( element ) {
 
-        return element.className.includes( 'resizable' ) || element.getAttribute( 'resizable' );
+        const attr = element.getAttribute( 'dnr' );
+        return [ 'resize', 'true' ].indexOf( attr ) >= 0;
     }
 
     getResizeFactor( element ) {
 
-        return parseFloat( element.getAttribute( 'resizable-factor' ) ) || 1;
+        return parseFloat( element.getAttribute( 'dnr-resize-factor' ) ) || 1;
     }
 
     // Styles are: absolute, margin, default
     // default only updates width and height
     getResizeStyle( element ) {
 
-        return element.getAttribute( 'resizable-style' ) || 'default';
+        return element.getAttribute( 'dnr-resize-style' ) || 'default';
     }
 
     handleMouseDown( event ) {
 
         if ( this.isResizableElement(event.target) ) {
 
-            this.activeResizableElement = event.target;
+            this.activeElement = event.target;
             this.handleResizeStart( event );
         }
     }
@@ -63,15 +78,21 @@ class ResizableProvider extends React.Component {
             document.body.style.cursor = 'auto';
         }
 
-        if ( this.activeResizableElement && this.resizeDirection !== 'none' ) {
+        if ( this.activeElement ) {
 
-            this.handleResize( event, this.resizeDirection );
+            const dnrState = this.getDnrState( this.activeElement );
+
+            if ( dnrState.includes('resize') ) {
+
+                const resizeDirection = dnrState.split('-')[1];
+                this.handleResize( event, resizeDirection );
+            }
         }
     }
 
     handleMouseUp( event ) {
 
-        if ( this.activeResizableElement ) {
+        if ( this.activeElement ) {
             
             this.handleResizeEnd();
         }
@@ -79,17 +100,14 @@ class ResizableProvider extends React.Component {
 
     handleResize( event, direction ) {
 
-        const style = window.getComputedStyle( this.activeResizableElement );
+        const style = window.getComputedStyle( this.activeElement );
 
         if ( style.position !== 'static' && style.position !== 'absolute' ) {
 
             throw new Error( "Resizable's position must be `static` or `absolute`" );
         }
 
-        const resizeStyle = this.getResizeStyle( this.activeResizableElement );
-
-        console.log( resizeStyle )
-       
+        const resizeStyle = this.getResizeStyle( this.activeElement );
         const width = parseFloat( style.width );
         const height = parseFloat( style.height );
 
@@ -104,13 +122,13 @@ class ResizableProvider extends React.Component {
         // Reset with all calculated value, in the case margin is set to `auto`
         if ( style.position === 'static' && resizeStyle === 'margin' ) {
 
-            this.activeResizableElement.style.marginLeft = marginLeft + 'px';
-            this.activeResizableElement.style.marginTop = marginTop + 'px';
-            this.activeResizableElement.style.marginBottom = marginBottom + 'px';
-            this.activeResizableElement.style.marginRight = marginRight + 'px';
+            this.activeElement.style.marginLeft = marginLeft + 'px';
+            this.activeElement.style.marginTop = marginTop + 'px';
+            this.activeElement.style.marginBottom = marginBottom + 'px';
+            this.activeElement.style.marginRight = marginRight + 'px';
         }
 
-        const factor = this.getResizeFactor( this.activeResizableElement );
+        const factor = this.getResizeFactor( this.activeElement );
         const distX = factor * ( event.clientX - this.lastX );
         const distY = factor * ( event.clientY - this.lastY );
 
@@ -122,14 +140,14 @@ class ResizableProvider extends React.Component {
 
                 if ( style.position === 'absolute' && resizeStyle === 'absolute' ) {
 
-                    this.activeResizableElement.style.top = top + distY + 'px';
+                    this.activeElement.style.top = top + distY + 'px';
                 }
                 else if ( style.position === 'static' && resizeStyle === 'margin' ) {
 
-                    this.activeResizableElement.style.marginTop = marginTop + distY + 'px';
+                    this.activeElement.style.marginTop = marginTop + distY + 'px';
                 }
 
-                this.activeResizableElement.style.height = newHeight + 'px';
+                this.activeElement.style.height = newHeight + 'px';
                 this.lastY = event.clientY;
                 document.body.style.cursor = 'n-resize';
             }
@@ -142,14 +160,14 @@ class ResizableProvider extends React.Component {
 
                 if ( style.position === 'absolute' && resizeStyle === 'absolute' ) {
 
-                    this.activeResizableElement.style.left = left + distX + 'px';
+                    this.activeElement.style.left = left + distX + 'px';
                 }
                 else if ( style.position === 'static' && resizeStyle === 'margin') {
 
-                    this.activeResizableElement.style.marginLeft = marginLeft + distX + 'px';
+                    this.activeElement.style.marginLeft = marginLeft + distX + 'px';
                 }
 
-                this.activeResizableElement.style.width = newWidth + 'px';
+                this.activeElement.style.width = newWidth + 'px';
                 this.lastX = event.clientX;
                 document.body.style.cursor = 'w-resize';
             }
@@ -160,7 +178,7 @@ class ResizableProvider extends React.Component {
 
             if ( newHeight >= this.minHeight ) {
 
-                this.activeResizableElement.style.height = newHeight + 'px';
+                this.activeElement.style.height = newHeight + 'px';
                 this.lastY = event.clientY;
                 document.body.style.cursor = 's-resize';
             }
@@ -171,7 +189,7 @@ class ResizableProvider extends React.Component {
 
             if ( newWidth >= this.minWidth ) {
                 
-                this.activeResizableElement.style.width = newWidth + 'px';
+                this.activeElement.style.width = newWidth + 'px';
                 this.lastX = event.clientX;
                 document.body.style.cursor = 'e-resize';
             }
@@ -179,52 +197,52 @@ class ResizableProvider extends React.Component {
 
         document.body.style.userSelect = 'none';
 
-        this.props.onResize( this.activeResizableElement );
+        this.onResize( this.activeElement );
 
     }
 
     handleResizeStart( event ) {
 
-        const borderRects = dom.getBorderRects( this.activeResizableElement );
+        const borderRects = dom.getBorderRects( this.activeElement );
         const cursorX = event.clientX;
         const cursorY = event.clientY;
 
         if ( dom.isInRect( cursorX, cursorY, borderRects.top ) ) {
 
-            this.resizeDirection = 'top';
+            this.setDnrState( this.activeElement, 'resize-top' );
             document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.right ) ) {
             
-            this.resizeDirection = 'right';
+            this.setDnrState( this.activeElement, 'resize-right' );
             document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.bottom ) ) {
             
-            this.resizeDirection = 'bottom';
+            this.setDnrState( this.activeElement, 'resize-bottom' );
             document.body.style.userSelect = 'none';
         }
         else if ( dom.isInRect( cursorX, cursorY, borderRects.left ) ) {
             
-            this.resizeDirection = 'left'
+            this.setDnrState( this.activeElement, 'resize-left' );
             document.body.style.userSelect = 'none';
         }
         else {
-            
-            this.resizeDirection = 'none';
+
+            this.setDnrState( this.activeElement, 'static' );
         }
 
         this.lastX = cursorX;
         this.lastY = cursorY;
 
-        this.props.onResizeStart( this.activeResizableElement );
+        this.onResizeStart( this.activeElement );
 
     }
 
     handleResizeEnd() {
 
-        this.props.onResizeEnd( this.activeResizableElement );
-        this.activeResizableElement = null;
+        this.onResizeEnd( this.activeElement );
+        this.activeElement = null;
         document.body.style.userSelect = 'auto';
     }
 
@@ -250,11 +268,20 @@ class ResizableProvider extends React.Component {
             document.body.style.cursor = 'auto';
         }
     }
+}
 
-    render() {
+function ResizableProvider(props) {
 
-        return this.props.children;
-    }
+    const provider = new DnrProvider( {
+
+        onResizeStart: props.onResizeStart,
+        onResize: props.onResize,
+        onResizeEnd: props.onResizeEnd,
+    } );
+
+    provider.init();
+
+    return props.children;
 }
 
 export { ResizableProvider };

@@ -13,61 +13,6 @@ class MainPanelZoomer {
         this.max = 10;
 
         this.__requireRedraw = true;
-
-        this.init();
-    }
-
-    init() {
-
-        // Override default browser's zoom in/out
-        if ( this.shouldOverrideDefault ) {
-
-            window.addEventListener( 'wheel', this.handleWheel.bind(this), { passive: false } );
-            window.addEventListener( 'keydown', this.handleKeyDown.bind(this) );
-        }
-    }
-
-    handleWheel( event ) {
-
-        if ( event.ctrlKey === true ) {
-            
-            event.preventDefault();
-
-            if ( event.deltaY > 0 ) {
-
-                this.out();
-            }
-            else if ( event.deltaY < 0 ) {
-
-                this.in();
-            }
-        }
-    }
-
-    handleKeyDown( event ) {
-
-        if ( event.ctrlKey === true ) {
-
-            // Ctrl and 0, keyboard number pad not tested
-            if ( event.keyCode === 48 ) {
-
-                // Only when both keys are pressed, otherwise e.g Ctrl+R won't work
-                event.preventDefault();
-                this.reset();
-            }
-            // Ctrl and -
-            else if ( event.keyCode === 189 ) {
-
-                event.preventDefault();
-                this.out();
-            }
-            // Ctrl and + 
-            else if ( event.keyCode === 187 ) {
-
-                event.preventDefault();
-                this.in();
-            }
-        }
     }
 
     getCurrentSize() {
@@ -105,7 +50,7 @@ class MainPanelZoomer {
         store.dispatch( zoomMainPanel(size) );
 
         // Force Chrome to redraw, so the scrollbar will appear when zoom in/out
-        // Firefox is fine
+        // Firefox does not need redraw
         if ( this.__requireRedraw ) {
 
             const elem = document.createElement( 'div' );

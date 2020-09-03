@@ -1,0 +1,8 @@
+.comp-holder {
+
+    position: absolute;
+    z-index: 100;
+    min-width: 50px;
+    min-height: 50px;
+    background-color: #00ff0088;
+}

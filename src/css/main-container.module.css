@@ -1,0 +1,9 @@
+.main-container {
+
+    position: absolute;
+    top: var(--tool-bar-height);
+    left: var(--comp-panel-width);
+    bottom: var(--status-bar-height);
+    right: var(--prop-panel-width);
+    overflow: auto;
+}
