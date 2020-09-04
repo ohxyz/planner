@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { CompHolder } from './comp-holder';
+import { dragCompHolder } from '~/redux/actions';
 import css from '~/css/main-panel.module.css';
 
 function MainPanel( props ) {
@@ -8,6 +10,8 @@ function MainPanel( props ) {
         width = 100,
         height = 100,
         zoom = 1,
+        compHolders = [],
+        onCompHolderDragEnd = () => { throw new Error( 'onCompHolderDragEnd n/a' ) }
     } = props;
 
     const style = {
@@ -17,8 +21,28 @@ function MainPanel( props ) {
         transform: `scale(${zoom})`,
     };
 
-    return  <div className={ css['main-panel'] } style={style}>
+    function handleDragOver( event ) {
+
+        // Must call `preventDefault` to enable dropEffect
+        // By default, it is a `move` effect, otherwise it is a `disable` effect
+        event.preventDefault();
+
+        // Don't use event.dataTransfer.dropEffect = 'move'
+        // Otherwise, it will conflict to the dropEffect in `Placeholder` component
+    }
+
+    return  <div className={ css['main-panel'] } style={ style } onDragOver={ handleDragOver }>
                 { props.children }
+                {
+                    compHolders.map( (holder, index) => 
+
+                        <CompHolder key={index} 
+                                    top={holder.top} 
+                                    left={holder.left}
+                                    onDragEnd={ pos => { onCompHolderDragEnd(index, pos) } }
+                        />
+                    )
+                }
             </div>
 }
 
@@ -28,8 +52,16 @@ const mapStateToProps = state => {
 
         width: state.undoable.present.mainPanel.width,
         height: state.undoable.present.mainPanel.height,
-        zoom: state.mainPanel.zoom
+        compHolders: state.undoable.present.mainPanel.compHolders,
+        zoom: state.mainPanel.zoom,
     };
 };
 
-export const ReduxedMainPanel = connect( mapStateToProps )( MainPanel );
+const mapDispatchToProps = dispatch => {
+
+    return {
+        onCompHolderDragEnd: ( index, pos ) => { dispatch( dragCompHolder(index, pos) ) }
+    }
+};
+
+export const ReduxedMainPanel = connect( mapStateToProps, mapDispatchToProps )( MainPanel );

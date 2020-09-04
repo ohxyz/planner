@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActionCreators } from 'redux-undo';
+import { store } from '~/redux/store';
 
 export function UndoTool() {
 

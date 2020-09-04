@@ -36,9 +36,8 @@ const initState = {
     mainPanel: {
         width: defaults.mainPanelWidth,
         height: defaults.mainPanelHeight,
-    },
-    mainContainer: {
         compHolders: [
+            //debug
             new CompHolder( {top: 50, left: 50 } ),
             new CompHolder( {top: 150, left: 100 } ),
         ]
@@ -130,7 +129,7 @@ export function undoableReducer( state=initState, action ) {
     if ( action.type === 'comp-holder/drag' ) {
 
         const newState = utils.clone( state );
-        const compHolder = newState.mainContainer.compHolders[ action.index ];
+        const compHolder = newState.mainPanel.compHolders[ action.index ];
         compHolder.top = action.pos.top;
         compHolder.left = action.pos.left;
 

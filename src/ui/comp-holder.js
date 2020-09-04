@@ -1,5 +1,6 @@
 import React, { useState }  from 'react';
 import css from '~/css/comp-holder.module.css';
+import dom from './dom-utils';
 
 function CompHolder( props ) {
 
@@ -16,14 +17,22 @@ function CompHolder( props ) {
 
     function handleDragStart( event ) {
 
-        startX = event.clientX;
-        startY = event.clientY;
+        // In Firefox, clientX/Y, pageX/Y all returns 0 in dragend
+        // So, use screenX/Y
+        // But, when move the browser window from one monitor to another, it may cause bugs in Firefox.
+        startX = event.screenX;
+        startY = event.screenY;
+
+        event.dataTransfer.effectAllowed = "all";
     }
 
     function handleDragEnd( event ) {
 
-        const shiftX = event.clientX - startX;
-        const shiftY = event.clientY - startY;
+        const shiftX = event.screenX - startX;
+        const shiftY = event.screenY - startY;
+
+        const newTop = top + shiftY;
+        const newLeft = left + shiftX;
 
         onDragEnd( { 
             top: top + shiftY,
@@ -31,10 +40,15 @@ function CompHolder( props ) {
         } );
     }
 
+    function handleDrag( event ) {
+
+    }
+
     return  <div className={ css['comp-holder'] }
                  style={ style }
                  onDragStart={ handleDragStart }
                  onDragEnd={ handleDragEnd }
+                 onDrag={ handleDrag }
                  draggable
             >
             </div>

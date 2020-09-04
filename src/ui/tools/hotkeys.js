@@ -1,3 +1,6 @@
+import { ActionCreators } from 'redux-undo';
+import { store } from '~/redux/store';
+
 class Hotkeys {
 
     constructor( { mainPanelZoomer } ) {
@@ -8,7 +11,7 @@ class Hotkeys {
 
     init() {
 
-        // Override default browser's zoom in/out
+        // Override default browser's hotkeys
         if ( this.shouldOverrideDefault ) {
 
             // Set `passive` to false, to disable browser's default zoom in/out
@@ -39,23 +42,31 @@ class Hotkeys {
         if ( event.ctrlKey === true ) {
 
             // Ctrl and 0, keyboard number pad not tested
-            if ( event.keyCode === 48 ) {
+            if ( event.key === '0' ) {
 
                 // Only when both keys are pressed, otherwise e.g Ctrl+R won't work
                 event.preventDefault();
                 this.mainPanelZoomer.reset();
             }
             // Ctrl and -
-            else if ( event.keyCode === 189 ) {
+            else if ( event.key === '-' ) {
 
                 event.preventDefault();
                 this.mainPanelZoomer.out();
             }
             // Ctrl and + 
-            else if ( event.keyCode === 187 ) {
+            else if ( event.key === '=' ) {
 
                 event.preventDefault();
                 this.mainPanelZoomer.in();
+            }
+            else if ( event.key === 'z' ) {
+
+                store.dispatch( ActionCreators.undo() );
+            }
+            else if ( event.key === 'y' ) {
+
+                store.dispatch( ActionCreators.redo() );
             }
         }
     }

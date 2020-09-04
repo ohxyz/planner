@@ -29,6 +29,8 @@ class DnrProvider {
         document.addEventListener( 'mousemove', this.handleMouseMove.bind(this) );
         document.addEventListener( 'mousedown', this.handleMouseDown.bind(this) );
         document.addEventListener( 'mouseup', this.handleMouseUp.bind(this) );
+        // document.addEventListener( 'dragstart', this.handleNativeDragStart.bind(this) );
+        // document.addEventListener( 'dragend', this.handleNativeDragEnd.bind(this) );
     }
 
     setDnrState( element, state ) {
@@ -345,6 +347,16 @@ class DnrProvider {
         this.setDnrState( this.activeElement, 'static' );
         this.activeElement = null;
         document.body.style.userSelect = 'auto';
+    }
+
+    handleNativeDragStart( event ) {
+
+        console.log( 'native drag start' )
+    }
+
+    handleNativeDragEnd( event ) {
+
+        console.log( 'native drag end' );
     }
 }
 

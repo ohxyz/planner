@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { removePlaceholder } from '~/redux/actions';
 import css from '~/css/placeholder.module.css';
@@ -19,12 +19,35 @@ function Placeholder( props ) {
         onRemovePlaceholderClick = () => { throw new Error('n/a') }
     } = props;
 
-    return  <div className={ css['placeholder'] }>
+    const [ style, setStyle ] = useState( { backgroundColor: '#0000ff11' } );
+
+    function handleDragEnter( event ) {
+
+        setStyle( { backgroundColor: '#0000ff33'} );
+    }
+
+    function handleDragLeave( event ) {
+
+        setStyle( { backgroundColor: '#0000ff11'} )
+    }
+
+    function handleDragOver( event ) {
+
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy';
+    }
+
+    return  <div className={ css['placeholder'] }
+                 style={ style }
+                 onDragEnter={ handleDragEnter }
+                 onDragLeave={ handleDragLeave }
+                 onDragOver={ handleDragOver }
+            >
                 <b>{ id }</b>
                 <button className={ css['remove-placeholder'] }
                         onClick={ () => onRemovePlaceholderClick( rowIndex, index ) }
                 >
-                x
+                    x
                 </button>
             </div>
 }
