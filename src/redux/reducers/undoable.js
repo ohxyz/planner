@@ -9,43 +9,49 @@ const defaults = {
     designHeight: 500,
 };
 
-const initState = {
+function getInitState() {
 
-    // {
-    //     rows: [ 
-    //         {   
-    //             id: 'row-0',
-    //             placeholders: [
-    //                 { id: '1', component: 'Textbox' }, 
-    //                 { id: '2', component: 'Radio Button List' }
-    //             ]
-    //         },
-    //         {
-    //             placeholders: [ ]
-    //         }
-    //     ]
-    // }
-    design: {
-        rows: [ 
-            new Row( 'row-0' )
-        ],
-        width: defaults.designWidth,
-        height: defaults.designHeight,
-        borderWidth: defaults.designBorderWidth,
-    },
-    mainPanel: {
-        width: defaults.mainPanelWidth,
-        height: defaults.mainPanelHeight,
-        compHolders: [
-            //debug
-            new CompHolder( {top: 50, left: 50 } ),
-            new CompHolder( {top: 150, left: 100 } ),
-        ]
-    },
-    foo: 'bar'
+    const initState = {
+
+        // {
+        //     rows: [ 
+        //         {   
+        //             id: 'row-0',
+        //             placeholders: [
+        //                 { id: '1', component: 'Textbox' }, 
+        //                 { id: '2', component: 'Radio Button List' }
+        //             ]
+        //         },
+        //         {
+        //             placeholders: [ ]
+        //         }
+        //     ]
+        // }
+        design: {
+            rows: [ 
+                new Row( 'row-0' )
+            ],
+            width: defaults.designWidth,
+            height: defaults.designHeight,
+            borderWidth: defaults.designBorderWidth,
+        },
+        mainPanel: {
+            width: defaults.mainPanelWidth,
+            height: defaults.mainPanelHeight,
+            compHolders: [
+                //debug
+                new CompHolder( {top: 50, left: 50 } ),
+                new CompHolder( {top: 150, left: 100 } ),
+            ]
+        },
+        foo: 'bar'
+    }
+
+    return initState;
 }
 
-export function undoableReducer( state=initState, action ) {
+
+export function undoableReducer( state=getInitState(), action ) {
 
     if ( action.type === 'design/add-row' ) {
 

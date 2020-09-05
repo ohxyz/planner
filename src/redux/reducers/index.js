@@ -1,3 +1,3 @@
 export { undoableReducer } from './undoable';
-export { mainPanelReducer } from './main-panel';
+export { mainReducer } from './main';
 

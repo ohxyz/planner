@@ -124,7 +124,7 @@ const mapStateToProps = state => {
         width: state.undoable.present.design.width,
         height: state.undoable.present.design.height,
         rows: state.undoable.present.design.rows,
-        zoomFactor: 2 / state.mainPanel.zoom
+        zoomFactor: 2 / state.main.mainPanel.zoom
     };
 };
 

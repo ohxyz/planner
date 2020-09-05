@@ -42,7 +42,17 @@ export function zoomMainPanel( size ) {
     return { type: 'main-panel/zoom', size };
 }
 
+export function initMainPanel( width, height ) {
+
+    return { type: 'main-panel/init', width, height };
+}
+
 export function dragCompHolder( index, pos ) {
 
     return { type: 'comp-holder/drag', index, pos };
+}
+
+export function resizeMainContainer( width, height ) {
+
+    return { type: 'main-container/resize', width, height };
 }

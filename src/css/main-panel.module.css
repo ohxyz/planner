@@ -1,6 +1,6 @@
 .main-panel {
 
-    margin: 0 auto;
+    /*margin: 0 auto;*/
     background-color: #ff000010;
     border: 5px solid #00000099;
     /* Use top left, other value may cause some content not visible */

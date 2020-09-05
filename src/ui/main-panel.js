@@ -9,6 +9,8 @@ function MainPanel( props ) {
     const {
         width = 100,
         height = 100,
+        minWidth = 100,
+        minHeight = 100,
         zoom = 1,
         compHolders = [],
         onCompHolderDragEnd = () => { throw new Error( 'onCompHolderDragEnd n/a' ) }
@@ -18,6 +20,8 @@ function MainPanel( props ) {
 
         width: width + 'px',
         height: height + 'px',
+        minWidth: minWidth + 'px',
+        minHeight: minHeight + 'px',
         transform: `scale(${zoom})`,
     };
 
@@ -53,7 +57,9 @@ const mapStateToProps = state => {
         width: state.undoable.present.mainPanel.width,
         height: state.undoable.present.mainPanel.height,
         compHolders: state.undoable.present.mainPanel.compHolders,
-        zoom: state.mainPanel.zoom,
+        zoom: state.main.mainPanel.zoom,
+        minWidth: state.main.mainPanel.minWidth,
+        minHeight: state.main.mainPanel.minHeight
     };
 };
 

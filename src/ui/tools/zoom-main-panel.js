@@ -17,7 +17,7 @@ class MainPanelZoomer {
 
     getCurrentSize() {
 
-        return store.getState().mainPanel.zoom;
+        return store.getState().main.mainPanel.zoom;
     }
 
     reset() {
@@ -125,9 +125,9 @@ const ReduxedZoomMainPanelTool = connect(
     state => {
 
         return {
-            zoom: state.mainPanel.zoom,
+            zoom: state.main.mainPanel.zoom,
             // Use a key for React to recreate the component, rather than update
-            key: state.mainPanel.zoom
+            key: state.main.mainPanel.zoom
         };
     },
 
