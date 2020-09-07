@@ -1,8 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { CompHolder } from './comp-holder';
-import { dragCompHolder } from '~/redux/actions';
+import { dragCompHolder, createCompHolder } from '~/redux/actions';
+import { CompHolder as CompHolderModel } from '~/models';
 import css from '~/css/main-panel.module.css';
+import dom from './dom-utils';
 
 function MainPanel( props ) {
 
@@ -13,7 +15,8 @@ function MainPanel( props ) {
         minHeight = 100,
         zoom = 1,
         compHolders = [],
-        onCompHolderDragEnd = () => { throw new Error( 'onCompHolderDragEnd n/a' ) }
+        onCompHolderDragEnd = () => { throw new Error( 'onCompHolderDragEnd n/a' ) },
+        onCompPanelItemDrop = () => { throw new Error( 'onCompPanelItemDrop n/a' ) }
     } = props;
 
     const style = {
@@ -24,6 +27,8 @@ function MainPanel( props ) {
         minHeight: minHeight + 'px',
         transform: `scale(${zoom})`,
     };
+
+    const myRef = React.createRef();
 
     function handleDragOver( event ) {
 
@@ -37,15 +42,34 @@ function MainPanel( props ) {
 
     function handleDrop( event ) {
 
-        const compName = event.dataTransfer.getData( 'text' );
+        let data = event.dataTransfer.getData( 'text' );
 
-        console.log( compName );
+        if ( !data ) {
+            return;
+        }
+
+        try {
+            data = JSON.parse( data );
+        }
+        catch( error ) {
+            throw new Error( 'DataTransfer is not a valid JSON object!' );
+        }
+
+        if ( data.src === 'comp-panel-item' ) {
+
+            const innerRect = dom.getInnerRect( myRef.current );
+            const left = event.clientX - innerRect.x;
+            const top = event.clientY - innerRect.y;
+            onCompPanelItemDrop( new CompHolderModel( {top, left, compName: data.compName} ) );
+            return;
+        }
     }
 
     return  <div className={ css['main-panel'] } 
                  style={ style } 
                  onDragOver={ handleDragOver }
                  onDrop={ handleDrop }
+                 ref={ myRef }
             >
                 { props.children }
                 {
@@ -54,6 +78,7 @@ function MainPanel( props ) {
                         <CompHolder key={index} 
                                     top={holder.top} 
                                     left={holder.left}
+                                    compName={holder.compName}
                                     onDragEnd={ pos => { onCompHolderDragEnd(index, pos) } }
                         />
                     )
@@ -77,7 +102,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
     return {
-        onCompHolderDragEnd: ( index, pos ) => { dispatch( dragCompHolder(index, pos) ) }
+        onCompHolderDragEnd: ( index, pos ) => dispatch( dragCompHolder(index, pos) ),
+        onCompPanelItemDrop: compHolder => dispatch( createCompHolder(compHolder) )
     }
 };
 

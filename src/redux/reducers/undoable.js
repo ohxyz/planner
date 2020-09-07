@@ -13,20 +13,6 @@ function getInitState() {
 
     const initState = {
 
-        // {
-        //     rows: [ 
-        //         {   
-        //             id: 'row-0',
-        //             placeholders: [
-        //                 { id: '1', component: 'Textbox' }, 
-        //                 { id: '2', component: 'Radio Button List' }
-        //             ]
-        //         },
-        //         {
-        //             placeholders: [ ]
-        //         }
-        //     ]
-        // }
         design: {
             rows: [ 
                 new Row( 'row-0' )
@@ -39,9 +25,9 @@ function getInitState() {
             width: defaults.mainPanelWidth,
             height: defaults.mainPanelHeight,
             compHolders: [
-                //debug
-                new CompHolder( {top: 50, left: 50 } ),
-                new CompHolder( {top: 150, left: 100 } ),
+                // debug
+                // new CompHolder( {top: 50, left: 50 } ),
+                // new CompHolder( {top: 150, left: 100 } ),
             ]
         },
         foo: 'bar'
@@ -138,6 +124,14 @@ export function undoableReducer( state=getInitState(), action ) {
         const compHolder = newState.mainPanel.compHolders[ action.index ];
         compHolder.top = action.pos.top;
         compHolder.left = action.pos.left;
+
+        return newState;
+    }
+
+    if ( action.type === 'comp-holder/create' ) {
+
+        const newState = utils.clone( state );
+        newState.mainPanel.compHolders.push( action.compHolder );
 
         return newState;
     }

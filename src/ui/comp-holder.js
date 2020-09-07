@@ -7,7 +7,7 @@ function CompHolder( props ) {
     const { 
         top = 0, 
         left = 0,
-        name = 'n/a',
+        compName = 'n/a',
         onDragEnd = () => { throw new Error( 'n/a' ) }
     } = props;
 
@@ -52,7 +52,7 @@ function CompHolder( props ) {
                  onDrag={ handleDrag }
                  draggable
             >
-                { name }
+                { compName }
             </div>
 
 }

@@ -58,6 +58,14 @@ export function dragCompHolder( index, pos ) {
     return { type: 'comp-holder/drag', index, pos };
 }
 
+/**
+ * @param {CompHolder} compHolder - Defined in `models`
+ */
+export function createCompHolder( compHolder ) {
+
+    return { type: 'comp-holder/create', compHolder };
+}
+
 /* Main Container *********************************************************************************/
 
 export function resizeMainContainer( width, height ) {

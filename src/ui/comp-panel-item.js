@@ -9,7 +9,9 @@ function CompPanelItem( props ) {
 
     function handleDragStart( event ) {
 
-        event.dataTransfer.setData( 'text/plain', name );
+        const data = { src: 'comp-panel-item', compName: name }
+
+        event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
     }
 
     return  <div className={ css[ 'comp-panel-item' ] } 
