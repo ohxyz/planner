@@ -7,7 +7,6 @@ import { resizeMainPanel } from '~/redux/actions';
 import { MainPanelZoomer } from '~/ui/tools/zoom-main-panel';
 import { Hotkeys } from '~/ui/tools/hotkeys';
 
-
 ReactDOM.render(
     <Provider store={ store }>
         <App />

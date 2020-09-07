@@ -2,7 +2,14 @@
 
     position: absolute;
     z-index: 100;
-    min-width: 50px;
-    min-height: 50px;
+    min-width: 100px;
+    min-height: 100px;
     background-color: #00ff0088;
+}
+
+.comp-holder-close {
+
+    position: absolute;
+    top: 0;
+    right: 0;
 }

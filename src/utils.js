@@ -10,6 +10,7 @@ function genRandomString( length=5 ) {
 
 // https://davidwalsh.name/javascript-debounce-function
 function debounce(func, wait, immediate) {
+
     var timeout;
     return function() {
         var context = this, args = arguments;
@@ -22,7 +23,7 @@ function debounce(func, wait, immediate) {
         timeout = setTimeout(later, wait);
         if (callNow) func.apply(context, args);
     };
-};
+}
 
 function foo() {
 

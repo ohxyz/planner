@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { CompHolder } from './comp-holder';
-import { dragCompHolder, createCompHolder } from '~/redux/actions';
+import { dragCompHolder, createCompHolder, removeCompHolder } from '~/redux/actions';
 import { CompHolder as CompHolderModel } from '~/models';
 import css from '~/css/main-panel.module.css';
 import dom from './dom-utils';
@@ -16,6 +16,7 @@ function MainPanel( props ) {
         zoom = 1,
         compHolders = [],
         onCompHolderDragEnd = () => { throw new Error( 'onCompHolderDragEnd n/a' ) },
+        onCompHolderClose = () => { throw new Error( 'onCompHolderClose n/a') },
         onCompPanelItemDrop = () => { throw new Error( 'onCompPanelItemDrop n/a' ) }
     } = props;
 
@@ -75,11 +76,13 @@ function MainPanel( props ) {
                 {
                     compHolders.map( (holder, index) => 
 
-                        <CompHolder key={index} 
-                                    top={holder.top} 
-                                    left={holder.left}
+                        <CompHolder key={ index }
+                                    index={ index }
+                                    top={ holder.top } 
+                                    left={ holder.left }
                                     compName={holder.compName}
-                                    onDragEnd={ pos => { onCompHolderDragEnd(index, pos) } }
+                                    onDragEnd={ pos => onCompHolderDragEnd(index, pos) }
+                                    onClose={ index => onCompHolderClose(index) }
                         />
                     )
                 }
@@ -103,6 +106,7 @@ const mapDispatchToProps = dispatch => {
 
     return {
         onCompHolderDragEnd: ( index, pos ) => dispatch( dragCompHolder(index, pos) ),
+        onCompHolderClose: index => dispatch( removeCompHolder(index) ),
         onCompPanelItemDrop: compHolder => dispatch( createCompHolder(compHolder) )
     }
 };

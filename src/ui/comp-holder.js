@@ -8,7 +8,9 @@ function CompHolder( props ) {
         top = 0, 
         left = 0,
         compName = 'n/a',
-        onDragEnd = () => { throw new Error( 'n/a' ) }
+        index = -1,
+        onDragEnd = () => { throw new Error('n/a') },
+        onClose = () => { throw new Error('onClose n/a') }
     } = props;
 
     let startX;
@@ -52,7 +54,14 @@ function CompHolder( props ) {
                  onDrag={ handleDrag }
                  draggable
             >
-                { compName }
+                <button className={ css['comp-holder-close'] }
+                        onClick={ () => onClose(index) } 
+                >
+                    x
+                </button>
+                <div className={ css['comp-holder-content'] }>
+                    { compName }
+                </div>
             </div>
 
 }

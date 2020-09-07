@@ -26,7 +26,7 @@ function getInitState() {
             height: defaults.mainPanelHeight,
             compHolders: [
                 // debug
-                // new CompHolder( {top: 50, left: 50 } ),
+                new CompHolder( {top: 50, left: 50, compName: 'dummy' } ),
                 // new CompHolder( {top: 150, left: 100 } ),
             ]
         },
@@ -101,6 +101,7 @@ export function undoableReducer( state=getInitState(), action ) {
 
         newState.design.width = newWidth;
         newState.design.height = newHeight;
+        
         // Also increase/decrease main-container's width/height
         newState.mainPanel.width += ( newWidth - state.design.width );
         newState.mainPanel.height += ( newHeight - state.design.height );
@@ -132,6 +133,14 @@ export function undoableReducer( state=getInitState(), action ) {
 
         const newState = utils.clone( state );
         newState.mainPanel.compHolders.push( action.compHolder );
+
+        return newState;
+    }
+
+    if ( action.type === 'comp-holder/remove' ) {
+
+        const newState = utils.clone( state );
+        newState.mainPanel.compHolders.splice( action.index, 1 );
 
         return newState;
     }
