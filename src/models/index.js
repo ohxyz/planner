@@ -17,8 +17,15 @@ export function CompPanelItem( name ) {
     this.name = name;
 }
 
-export function CompHolder( { top, left } ) {
+export function CompHolder( args={} ) {
+
+    const {
+        top = 0,
+        left = 0,
+        compName = ''
+    } = args;
 
     this.top = top;
     this.left = left;
+    this.compName = compName;
 }

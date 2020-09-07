@@ -35,7 +35,18 @@ function MainPanel( props ) {
         // Otherwise, it will conflict to the dropEffect in `Placeholder` component
     }
 
-    return  <div className={ css['main-panel'] } style={ style } onDragOver={ handleDragOver }>
+    function handleDrop( event ) {
+
+        const compName = event.dataTransfer.getData( 'text' );
+
+        console.log( compName );
+    }
+
+    return  <div className={ css['main-panel'] } 
+                 style={ style } 
+                 onDragOver={ handleDragOver }
+                 onDrop={ handleDrop }
+            >
                 { props.children }
                 {
                     compHolders.map( (holder, index) => 

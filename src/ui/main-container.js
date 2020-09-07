@@ -16,8 +16,9 @@ function MainContainer( props ) {
 
     useEffect( handleLoad );
 
-    const handleLoadLess = utils.debounce( handleLoad, 200 );
-    window.addEventListener( 'resize', utils.debounce( handleLoad, 200 ) );
+    const handleLoadDebounced = utils.debounce( handleLoad, 200 );
+
+    window.addEventListener( 'resize', handleLoadDebounced );
 
     function handleLoad( event ) {
 

@@ -1,3 +1,5 @@
+/* Design *****************************************************************************************/
+
 export function removeDesignRow( index ) {
 
     return { type: 'design/remove-row', index };
@@ -32,6 +34,8 @@ export function removePlaceholder( rowIndex, phIndex ) {
     return { type: 'design/remove-placeholder', rowIndex, phIndex }
 }
 
+/* Main Panel *************************************************************************************/
+
 export function resizeMainPanel( width, height ) {
 
     return { type: 'main-panel/resize', width, height };
@@ -47,10 +51,14 @@ export function initMainPanel( width, height ) {
     return { type: 'main-panel/init', width, height };
 }
 
+/* Comp Holder ************************************************************************************/
+
 export function dragCompHolder( index, pos ) {
 
     return { type: 'comp-holder/drag', index, pos };
 }
+
+/* Main Container *********************************************************************************/
 
 export function resizeMainContainer( width, height ) {
 

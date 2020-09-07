@@ -7,7 +7,17 @@ function CompPanelItem( props ) {
         name = 'n/a'
     } = props;
 
-    return  <div className={ css[ 'comp-panel-item' ] }>{ name }</div>
+    function handleDragStart( event ) {
+
+        event.dataTransfer.setData( 'text/plain', name );
+    }
+
+    return  <div className={ css[ 'comp-panel-item' ] } 
+                 draggable="true"
+                 onDragStart={ handleDragStart }
+            >
+                { name }
+            </div>
 }
 
 export { CompPanelItem }
