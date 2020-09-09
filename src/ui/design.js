@@ -97,7 +97,7 @@ class Design extends React.Component {
                      onMouseDown={ this.handleMouseDown.bind(this) }
                      onMouseUp={ this.handleMouseUp.bind(this) }
                      onMouseMove={ this.handleMouseMove.bind(this) }
-                     dnr="resize"
+                     dnr-resize="true"
                      dnr-resize-factor={ this.props.zoomFactor }
                 >
                     {

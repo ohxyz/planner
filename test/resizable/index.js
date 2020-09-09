@@ -33,15 +33,16 @@ function App() {
     }
 
     return  <ResizableProvider>
-                <div className={ css.my } dnr="true" dnr-resize-style="absolute">absolute</div>
-                <div className={ css.my2 } dnr="true" dnr-resize-style="margin" dnr-drag-style="margin">static</div>
-                <div className={ css.my3 } dnr="resize" dnr-resize-style="margin" dnr-resize-factor="1">double</div>
+                <div className={ css.my } dnr-resize="true" dnr-drag="true" dnr-resize-style="absolute">absolute</div>
+                <div className={ css.my2 } dnr-resize="true" dnr-drag="true" dnr-resize-style="margin" dnr-drag-style="margin">static</div>
+                <div className={ css.my3 } dnr-resize="true" dnr-resize-style="margin" dnr-resize-factor="1">double</div>
                 <div className={ css.my4 } 
-                     dnr-resize-style="absolute" 
-                     draggable="true" 
+                     dnr-resize="true"
+                     dnr-resize-style="absolute"
+                     draggable
                      onDragStart={ handleDragStart } 
                 >
-                    draggble
+                    resize conflict with native draggble
                 </div>
                 <div className="dropzone" 
                      onDragEnter={ handleDragEnter } 

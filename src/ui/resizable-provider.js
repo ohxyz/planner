@@ -24,13 +24,18 @@ class DnrProvider {
         this.defaultCursorStyle = window.getComputedStyle( document.body ).cursor;
     }
 
+    throwErrorIfNativeDraggable( element ) {
+
+        if ( this.isNativeDraggable( element ) ){
+            throw new Error( 'Native draggable does not work with Dnr!' );
+        }
+    }
+
     init() {
 
         document.addEventListener( 'mousemove', this.handleMouseMove.bind(this) );
         document.addEventListener( 'mousedown', this.handleMouseDown.bind(this) );
         document.addEventListener( 'mouseup', this.handleMouseUp.bind(this) );
-        // document.addEventListener( 'dragstart', this.handleNativeDragStart.bind(this) );
-        // document.addEventListener( 'dragend', this.handleNativeDragEnd.bind(this) );
     }
 
     setDnrState( element, state ) {
@@ -45,14 +50,17 @@ class DnrProvider {
 
     isResizable( element ) {
 
-        const attr = element.getAttribute( 'dnr' );
-        return [ 'resize', 'true' ].indexOf( attr ) >= 0;
+        return element.getAttribute( 'dnr-resize' ) === 'true';
     }
 
     isDraggable( element ) {
 
-        const attr = element.getAttribute( 'dnr' );
-        return [ 'drag', 'true' ].indexOf( attr ) >= 0;
+        return element.getAttribute( 'dnr-drag' ) === 'true';
+    }
+
+    isNativeDraggable( element ) {
+
+        return element.getAttribute( 'draggable' ) !== null;
     }
 
     getResizeFactor( element ) {
@@ -72,20 +80,25 @@ class DnrProvider {
         return element.getAttribute( 'dnr-drag-style' ) || 'absolute';
     }
 
+
     handleMouseDown( event ) {
 
         if ( this.isResizable(event.target) ) {
 
+            this.throwErrorIfNativeDraggable( event.target );
             this.handleResizeStart( event );
         }
 
         if ( this.isDraggable(event.target) ) {
 
+            this.throwErrorIfNativeDraggable( event.target );
             this.handleDragStart( event );
         }
     }
 
     handleMouseMove( event ) {
+
+        this.isNativeDraggable( event.target );
 
         if ( this.isResizable( event.target ) ) {
             
@@ -347,16 +360,6 @@ class DnrProvider {
         this.setDnrState( this.activeElement, 'static' );
         this.activeElement = null;
         document.body.style.userSelect = 'auto';
-    }
-
-    handleNativeDragStart( event ) {
-
-        console.log( 'native drag start' )
-    }
-
-    handleNativeDragEnd( event ) {
-
-        console.log( 'native drag end' );
     }
 }
 
