@@ -1,9 +1,9 @@
+import css from '~/css/main-panel.module.css';
 import React from 'react';
 import { connect } from 'react-redux';
 import { CompHolder } from './comp-holder';
 import { dragCompHolder, createCompHolder, removeCompHolder } from '~/redux/actions';
 import { CompHolder as CompHolderModel } from '~/models';
-import css from '~/css/main-panel.module.css';
 import dom from './dom-utils';
 
 function MainPanel( props ) {

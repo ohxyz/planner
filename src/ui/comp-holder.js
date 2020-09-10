@@ -1,6 +1,7 @@
 import React, { useState }  from 'react';
 import css from '~/css/comp-holder.module.css';
 import dom from './dom-utils';
+import { compStore } from '~/comp-store';
 
 function CompHolder( props ) {
 
@@ -17,6 +18,13 @@ function CompHolder( props ) {
     let startY;
 
     const style = { top, left };
+    
+    let Component = compStore.get( compName )
+
+    if ( !Component ) {
+        
+        Component = () => <div>n/a</div>
+    }
 
     function handleDragStart( event ) {
 
@@ -60,7 +68,7 @@ function CompHolder( props ) {
                     x
                 </button>
                 <div className={ css['comp-holder-content'] }>
-                    { compName }
+                    <Component />
                 </div>
             </div>
 

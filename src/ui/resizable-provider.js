@@ -105,7 +105,7 @@ class DnrProvider {
             this.handleCursorStyle( event );
         }
         else {
-            // Reset mouse when curor moves off the border
+            // Reset cusor style when curor moves off the border
             document.body.style.cursor = this.defaultCursorStyle;
         }
 

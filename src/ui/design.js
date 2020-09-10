@@ -14,6 +14,7 @@ class Design extends React.Component {
         zoomFactor: 1,
         onAddRowClick: () => { throw new Error( 'n/a' ) },
         onResizeRowFinish: ( index, height ) => { throw new Error( 'n/a' ) }
+
     };
 
     constructor( props ) {

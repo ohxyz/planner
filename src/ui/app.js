@@ -1,3 +1,4 @@
+import css from '~/css/app.module.css';
 import React from 'react';
 import { store } from '~/redux/store';
 import { CompPanel } from './comp-panel';
@@ -5,7 +6,6 @@ import { ToolBar } from './tool-bar';
 import { ReduxedZoomMainPanelTool } from './tools/zoom-main-panel';
 import { UndoTool } from './tools/undo';
 import { CompPanelItem as CompPanelItemModel } from '~/models';
-import css from '~/css/app.module.css';
 import { ResizableProvider } from './resizable-provider';
 import { connect } from 'react-redux';
 import { resizeDesign } from '~/redux/actions';
