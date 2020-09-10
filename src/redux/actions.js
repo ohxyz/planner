@@ -80,3 +80,15 @@ export function resizeMainContainer( width, height ) {
 
     return { type: 'main-container/resize', width, height };
 }
+
+/* Placeholder ************************************************************************************/
+
+export function addCompFromCompPanel( rowIndex, index, compName ) {
+
+    return { type: 'placeholder/add-comp-from-comp-panel', rowIndex, index, compName }
+}
+
+export function addCompFromPlaceholder( rowIndex, index, compName, phIndex ) {
+
+    return { type: 'placeholder/add-comp-from-placeholder', rowIndex, index, compName, phIndex }
+}

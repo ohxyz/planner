@@ -10,44 +10,41 @@ function CompHolder( props ) {
         left = 0,
         compName = 'n/a',
         index = -1,
-        onDragEnd = () => { throw new Error('n/a') },
+        onDragEnd = () => { throw new Error('onDragEnd n/a') },
         onClose = () => { throw new Error('onClose n/a') }
     } = props;
 
-    let startX;
-    let startY;
+    let startX = top;
+    let startY = left;
 
     const style = { top, left };
-    
-    let Component = compStore.get( compName )
-
-    if ( !Component ) {
-        
-        Component = () => <div>n/a</div>
-    }
+    const Component = compStore.get( compName ) || ( () => 'n/a' );
 
     function handleDragStart( event ) {
 
         // In Firefox, clientX/Y, pageX/Y all returns 0 in dragend
         // So, use screenX/Y
         // But, when move the browser window from one monitor to another, it may cause bugs in Firefox.
-        startX = event.screenX;
-        startY = event.screenY;
+        startX = event.clientX;
+        startY = event.clientY;
 
         event.dataTransfer.effectAllowed = "all";
+
+        const data = { src: 'comp-holder', compName, phIndex: index };
+        event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
     }
 
     function handleDragEnd( event ) {
 
-        const shiftX = event.screenX - startX;
-        const shiftY = event.screenY - startY;
+        const shiftX = event.clientX - startX;
+        const shiftY = event.clientY - startY;
 
         const newTop = top + shiftY;
         const newLeft = left + shiftX;
 
         onDragEnd( { 
-            top: top + shiftY,
-            left: left + shiftX
+            top: newTop,
+            left: newLeft
         } );
     }
 

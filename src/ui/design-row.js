@@ -38,7 +38,13 @@ function DesignRow( props ) {
                 {
                     placeholders.map( (ph, idx) => 
 
-                        <ReduxedPlaceholder key={idx} id={ph.id} index={idx} rowIndex={rowIndex} />
+                        <ReduxedPlaceholder 
+                            key={idx} 
+                            id={ph.id} 
+                            index={idx} 
+                            rowIndex={rowIndex} 
+                            compName={ph.compName}
+                        />
                     )
                 }
                 <button className={ css['add-placeholder'] }

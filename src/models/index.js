@@ -7,9 +7,10 @@ export function Row( id ) {
     this.placeholders = [ new Placeholder() ]
 }
 
-export function Placeholder( id ) {
+export function Placeholder() {
 
     this.id = utils.genRandomString();
+    this.compName = '';
 }
 
 export function CompPanelItem( name ) {

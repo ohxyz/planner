@@ -6,9 +6,14 @@
     flex-grow: 1;
 }
 
-.remove-placeholder {
+.placeholder__remove {
 
     position: absolute;
     right: 0;
     top: -25px;
+}
+
+.placeholder__content {
+
+
 }

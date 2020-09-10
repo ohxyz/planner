@@ -56,6 +56,11 @@ function MainPanel( props ) {
             throw new Error( 'DataTransfer is not a valid JSON object!' );
         }
 
+        // Only allow drop in blank space. e.g. not allowed to drop in `design` area
+        if ( event.target !== myRef.current ) {
+            return;
+        }
+
         if ( data.src === 'comp-panel-item' ) {
 
             const innerRect = dom.getInnerRect( myRef.current );
@@ -80,7 +85,7 @@ function MainPanel( props ) {
                                     index={ index }
                                     top={ holder.top } 
                                     left={ holder.left }
-                                    compName={holder.compName}
+                                    compName={ holder.compName }
                                     onDragEnd={ pos => onCompHolderDragEnd(index, pos) }
                                     onClose={ index => onCompHolderClose(index) }
                         />

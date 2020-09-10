@@ -1,10 +1,10 @@
+import css from '~/css/main-container.module.css';
+import utils from '~/utils';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { ReduxedMainPanel } from './main-panel';
 import { ReduxedDesign } from './design';
 import { initMainPanel } from '~/redux/actions';
-import utils from '~/utils';
-import css from '~/css/main-container.module.css';
 
 function MainContainer( props ) {
 
