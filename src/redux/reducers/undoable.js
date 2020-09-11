@@ -84,7 +84,10 @@ export function undoableReducer( state=getInitState(), action ) {
     
     if ( action.type === 'design/remove-placeholder' ) {
 
+        console.log( action );
         const { rowIndex, phIndex } = action;
+
+        console.log( '@@', rowIndex, phIndex );
         const newState = utils.clone( state );
         const rows = newState.design.rows;
 
@@ -141,6 +144,16 @@ export function undoableReducer( state=getInitState(), action ) {
 
         const newState = utils.clone( state );
         newState.mainPanel.compHolders.splice( action.index, 1 );
+
+        return newState;
+    }
+
+    if ( action.type === 'comp-holder/move-out' ) {
+
+        const newState = utils.clone( state );
+        newState.mainPanel.compHolders.push( action.compHolder );
+        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
+        placeholder.compName = '';
 
         return newState;
     }

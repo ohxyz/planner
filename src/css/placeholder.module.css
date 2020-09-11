@@ -6,6 +6,11 @@
     flex-grow: 1;
 }
 
+.placeholder--active {
+
+    background-color: #0000ff33;
+}
+
 .placeholder__remove {
 
     position: absolute;

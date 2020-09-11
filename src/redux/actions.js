@@ -25,16 +25,6 @@ export function resizeDesign( width, height ) {
     return { type: 'design/resize', width, height };
 }
 
-/**
- * @param {number} rowIndex - Row index
- * @param {number} phIndex - The index of placeholder on each row.
- */
-export function removePlaceholder( rowIndex, phIndex ) {
-
-    return { type: 'design/remove-placeholder', rowIndex, phIndex }
-}
-
-
 /* Main Panel *************************************************************************************/
 
 export function resizeMainPanel( width, height ) {
@@ -73,22 +63,14 @@ export function removeCompHolder( index ) {
     return { type: 'comp-holder/remove', index };
 }
 
+export function moveOutCompHolder( compHolder, rowIndex, phIndex ) {
+
+    return { type: 'comp-holder/move-out', compHolder, rowIndex, phIndex };
+}
 
 /* Main Container *********************************************************************************/
 
 export function resizeMainContainer( width, height ) {
 
     return { type: 'main-container/resize', width, height };
-}
-
-/* Placeholder ************************************************************************************/
-
-export function addCompFromCompPanel( rowIndex, index, compName ) {
-
-    return { type: 'placeholder/add-comp-from-comp-panel', rowIndex, index, compName }
-}
-
-export function addCompFromPlaceholder( rowIndex, index, compName, phIndex ) {
-
-    return { type: 'placeholder/add-comp-from-placeholder', rowIndex, index, compName, phIndex }
 }

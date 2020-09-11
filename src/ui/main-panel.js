@@ -2,7 +2,12 @@ import css from '~/css/main-panel.module.css';
 import React from 'react';
 import { connect } from 'react-redux';
 import { CompHolder } from './comp-holder';
-import { dragCompHolder, createCompHolder, removeCompHolder } from '~/redux/actions';
+import { 
+    dragCompHolder, 
+    createCompHolder, 
+    removeCompHolder,
+    moveOutCompHolder,
+} from '~/redux/actions';
 import { CompHolder as CompHolderModel } from '~/models';
 import dom from './dom-utils';
 
@@ -17,7 +22,8 @@ function MainPanel( props ) {
         compHolders = [],
         onCompHolderDragEnd = () => { throw new Error( 'onCompHolderDragEnd n/a' ) },
         onCompHolderClose = () => { throw new Error( 'onCompHolderClose n/a') },
-        onCompPanelItemDrop = () => { throw new Error( 'onCompPanelItemDrop n/a' ) }
+        onCompPanelItemDrop = () => { throw new Error( 'onCompPanelItemDrop n/a' ) },
+        onPlaceholderDrop = () => { throw new Error('onPlaceholderDrop n/a') }
     } = props;
 
     const style = {
@@ -53,7 +59,7 @@ function MainPanel( props ) {
             data = JSON.parse( data );
         }
         catch( error ) {
-            throw new Error( 'DataTransfer is not a valid JSON object!' );
+            return;
         }
 
         // Only allow drop in blank space. e.g. not allowed to drop in `design` area
@@ -61,12 +67,27 @@ function MainPanel( props ) {
             return;
         }
 
+        if ( data.src !== 'comp-panel-item' && data.src !== 'placeholder' ) {
+            return;
+        }
+
+        const innerRect = dom.getInnerRect( myRef.current );
+        const left = event.clientX - innerRect.x;
+        const top = event.clientY - innerRect.y;
+
         if ( data.src === 'comp-panel-item' ) {
 
-            const innerRect = dom.getInnerRect( myRef.current );
-            const left = event.clientX - innerRect.x;
-            const top = event.clientY - innerRect.y;
             onCompPanelItemDrop( new CompHolderModel( {top, left, compName: data.compName} ) );
+            return;
+        }
+
+        if ( data.src === 'placeholder' ) {
+
+            onPlaceholderDrop( 
+                new CompHolderModel( {top, left, compName: data.compName} ),
+                data.rowIndex,
+                data.phIndex
+            );
             return;
         }
     }
@@ -112,7 +133,10 @@ const mapDispatchToProps = dispatch => {
     return {
         onCompHolderDragEnd: ( index, pos ) => dispatch( dragCompHolder(index, pos) ),
         onCompHolderClose: index => dispatch( removeCompHolder(index) ),
-        onCompPanelItemDrop: compHolder => dispatch( createCompHolder(compHolder) )
+        onCompPanelItemDrop: compHolder => dispatch( createCompHolder(compHolder) ),
+        onPlaceholderDrop: ( compHolder, rowIndex, phIndex ) => {
+            dispatch( moveOutCompHolder(compHolder, rowIndex, phIndex) )
+        }
     }
 };
 

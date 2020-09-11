@@ -1,11 +1,6 @@
 import css from '~/css/placeholder.module.css';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { 
-    removePlaceholder, 
-    addCompFromCompPanel,
-    addCompFromPlaceholder
-} from '~/redux/actions';
 import { compStore } from '~/comp-store';
 
 function Placeholder( props ) {
@@ -19,18 +14,26 @@ function Placeholder( props ) {
         onCompPanelItemDrop = () => { throw new Error('onCompPanelItemDrop n/a') },
         onCompHolderDrop = () => { throw new Error('onCompHolderDrop n/a') },
     } = props;
+    
+    const [ className, setClassName ] = useState( css['placeholder'] );
+    const Component = compStore.get( compName ) || ( () => '' );
 
-    const [ style, setStyle ] = useState( { backgroundColor: '#0000ff11' } );
-    const Component = compStore.get( compName ) || ( () => 'n/a' );
+    function handleDragStart( event ) {
+
+        if ( !compName ) { return; }
+
+        const data = { src: 'placeholder', compName, rowIndex, phIndex: index };
+        event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
+    }
 
     function handleDragEnter( event ) {
 
-        setStyle( {backgroundColor: '#0000ff33'} );
+        setClassName( css['placeholder'] + ' ' + css['placeholder--active'] );
     }
 
     function handleDragLeave( event ) {
 
-        setStyle( {backgroundColor: '#0000ff11'} )
+        setClassName( css['placeholder'] );
     }
 
     function handleDragOver( event ) {
@@ -51,28 +54,36 @@ function Placeholder( props ) {
             data = JSON.parse( data );
         }
         catch( error ) {
-            throw new Error( 'DataTransfer is not a valid JSON object!' );
+            return;
         }
 
         if ( data.src === 'comp-panel-item' ) {
 
             onCompPanelItemDrop( rowIndex, index, data.compName );
+            setClassName( css['placeholder'] );
             return;
         }
 
         if ( data.src === 'comp-holder' ) {
 
-            onCompHolderDrop( rowIndex, index, data.compName, data.phIndex );
+            onCompHolderDrop( {
+                rowIndex, 
+                index, 
+                compName: data.compName, 
+                phIndex: data.phIndex 
+            } );
+            setClassName( css['placeholder'] );
             return;
         }
     }
 
-    return  <div className={ css['placeholder'] }
-                 style={ style }
+    return  <div className={ className }
+                 onDragStart={ handleDragStart }
                  onDragEnter={ handleDragEnter }
                  onDragLeave={ handleDragLeave }
                  onDragOver={ handleDragOver }
                  onDrop={ handleDrop }
+                 draggable={ compName ? "true" : "false" }
             >
                 <button className={ css['placeholder__remove'] }
                         onClick={ () => onRemoveClick( rowIndex, index ) }
@@ -88,9 +99,15 @@ function Placeholder( props ) {
 function mapDispatchToProps( dispatch ) {
 
     return {
-        onRemoveClick: ( rowIndex, index ) => dispatch( removePlaceholder(rowIndex, index) ),
-        onCompPanelItemDrop: ( rowIndex, index, compName ) => dispatch( addCompFromCompPanel(rowIndex, index, compName) ),
-        onCompHolderDrop: ( rowIndex, index, compName, phIndex ) => dispatch( addCompFromPlaceholder(rowIndex, index, compName, phIndex) )
+        onRemoveClick: ( rowIndex, phIndex ) => {
+            dispatch( { type: 'design/remove-placeholder', rowIndex, phIndex } )
+        },
+        onCompPanelItemDrop: ( rowIndex, index, compName ) => {
+            dispatch( { type: 'placeholder/add-comp-from-comp-panel', rowIndex, index, compName } )
+        },
+        onCompHolderDrop: payload => {
+            dispatch( { type: 'placeholder/add-comp-from-placeholder', ...payload } )
+        }
     }   
 }
 
