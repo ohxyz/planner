@@ -1,4 +1,5 @@
-module.exports = {
+
+const config = {
     
     mode: 'development',
     entry: './src/index.js',
@@ -34,12 +35,28 @@ module.exports = {
                         options: { 
                             modules: { 
                                 auto: true,
-                                localIdentName: '[local]--[hash:base64:5]',
+                                localIdentName: '[local]---[hash:base64:5]',
                             }
                         }
                     }
                 ]
+            },
+            {
+                test: /\.s[ac]ss$/i,
+                use: [ 
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ]
+            },
+            {   
+                test: /\.(png|woff|woff2|eot|ttf|otf|svg)$/, 
+                use: {
+                    loader: 'file-loader',
+                }
             }
         ]
     }
 };
+
+module.exports = config;

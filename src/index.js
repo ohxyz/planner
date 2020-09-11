@@ -9,6 +9,9 @@ import { Hotkeys } from '~/ui/tools/hotkeys';
 import { compStore } from './comp-store';
 import { Button, Checkbox, TextField } from 'rui';
 
+import 'rui/src/scss/coles/rocket.scss';
+import 'rui/src/scss/coles/font-face.scss';
+
 compStore.add( 'Button', Button );
 compStore.add( 'Checkbox', Checkbox );
 compStore.add( 'Text Field', TextField );
