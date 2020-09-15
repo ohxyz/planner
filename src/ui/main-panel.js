@@ -20,9 +20,10 @@ function MainPanel( props ) {
         minHeight = 100,
         zoom = 1,
         compHolders = [],
-        onCompHolderDragEnd = () => { throw new Error( 'onCompHolderDragEnd n/a' ) },
-        onCompHolderClose = () => { throw new Error( 'onCompHolderClose n/a') },
-        onCompPanelItemDrop = () => { throw new Error( 'onCompPanelItemDrop n/a' ) },
+        onCompHolderDragEnd = () => { throw new Error('onCompHolderDragEnd n/a') },
+        onCompHolderClose = () => { throw new Error('onCompHolderClose n/a') },
+        onCompHolderSelect = () => { throw new Error('onCompHolderSelect n/a') },
+        onCompPanelItemDrop = () => { throw new Error('onCompPanelItemDrop n/a') },
         onPlaceholderDrop = () => { throw new Error('onPlaceholderDrop n/a') }
     } = props;
 
@@ -107,8 +108,11 @@ function MainPanel( props ) {
                                     top={ holder.top } 
                                     left={ holder.left }
                                     compName={ holder.compName }
+                                    isSelected={ holder.isSelected }
                                     onDragEnd={ pos => onCompHolderDragEnd(index, pos) }
                                     onClose={ index => onCompHolderClose(index) }
+                                    onSelect={ index => onCompHolderSelect(index) }
+
                         />
                     )
                 }
@@ -133,6 +137,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onCompHolderDragEnd: ( index, pos ) => dispatch( dragCompHolder(index, pos) ),
         onCompHolderClose: index => dispatch( removeCompHolder(index) ),
+        onCompHolderSelect: index => dispatch( { type: 'comp-holder/select', index } ),
         onCompPanelItemDrop: compHolder => dispatch( createCompHolder(compHolder) ),
         onPlaceholderDrop: ( compHolder, rowIndex, phIndex ) => {
             dispatch( moveOutCompHolder(compHolder, rowIndex, phIndex) )

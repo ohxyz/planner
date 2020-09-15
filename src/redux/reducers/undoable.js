@@ -26,8 +26,8 @@ function getInitState() {
             height: defaults.mainPanelHeight,
             compHolders: [
                 // debug
-                new CompHolder( {top: 50, left: 50, compName: 'dummy' } ),
-                // new CompHolder( {top: 150, left: 100 } ),
+                new CompHolder( {top: 50, left: 50, compName: 'Checkbox' } ),
+                new CompHolder( {top: 50, left: 200, compName: 'Text Field' } ),
             ]
         },
         foo: 'bar'
@@ -87,7 +87,6 @@ export function undoableReducer( state=getInitState(), action ) {
         console.log( action );
         const { rowIndex, phIndex } = action;
 
-        console.log( '@@', rowIndex, phIndex );
         const newState = utils.clone( state );
         const rows = newState.design.rows;
 
@@ -144,6 +143,17 @@ export function undoableReducer( state=getInitState(), action ) {
 
         const newState = utils.clone( state );
         newState.mainPanel.compHolders.splice( action.index, 1 );
+
+        return newState;
+    }
+
+    if ( action.type === 'comp-holder/select' ) {
+
+        const newState = utils.clone( state );
+        newState.mainPanel.compHolders.forEach( (ch, idx) => {
+
+            idx === action.index ? (ch.isSelected = true) : (ch.isSelected = false);
+        } )
 
         return newState;
     }

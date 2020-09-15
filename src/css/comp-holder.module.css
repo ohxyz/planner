@@ -7,9 +7,16 @@
     background-color: #00ff0088;
 }
 
+.comp-holder--selected {
+
+    outline: dashed #00000033;
+}
+
 .comp-holder-close {
 
     position: absolute;
     top: 0;
     right: 0;
 }
+
+

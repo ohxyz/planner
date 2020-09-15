@@ -29,4 +29,5 @@ export function CompHolder( args={} ) {
     this.top = top;
     this.left = left;
     this.compName = compName;
+    this.isSelected = false;
 }

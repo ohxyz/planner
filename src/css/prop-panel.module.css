@@ -1,0 +1,10 @@
+.prop-panel {
+
+    position: absolute;
+    background-color: var(--black10);
+    top: 100px;
+    right: 0;
+    bottom: 100px;
+    width: var(--prop-panel-width);
+    z-index: 100;
+}

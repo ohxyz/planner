@@ -1,73 +1,96 @@
-import React, { useState }  from 'react';
+import React from 'react';
 import css from '~/css/comp-holder.module.css';
 import dom from './dom-utils';
 import { compStore } from '~/comp-store';
 
-function CompHolder( props ) {
+class CompHolder extends React.Component {
 
-    const { 
-        top = 0, 
-        left = 0,
-        compName = 'n/a',
-        index = -1,
-        onDragEnd = () => { throw new Error('onDragEnd n/a') },
-        onClose = () => { throw new Error('onClose n/a') }
-    } = props;
+    static defaultProps = {
+        top: 0, 
+        left: 0,
+        compName: 'n/a',
+        index: -1,
+        isSelected: false,
+        onDragEnd: () => { throw new Error('onDragEnd n/a') },
+        onClose: () => { throw new Error('onClose n/a') },
+        onSelect: () => { throw new Error('onSelect n/a') }
+    }
 
-    let startX = top;
-    let startY = left;
+    constructor( props ) {
 
-    const style = { top, left };
-    const Component = compStore.get( compName ) || ( () => 'n/a' );
+        super(props);
 
-    function handleDragStart( event ) {
+        this.startX = 0;
+        this.startY = 0;
+    }
+
+    handleDragStart( event ) {
 
         // In Firefox, clientX/Y, pageX/Y all returns 0 in dragend
         // So, use screenX/Y
         // But, when move the browser window from one monitor to another, it may cause bugs in Firefox.
-        startX = event.clientX;
-        startY = event.clientY;
+        this.startX = event.screenX;
+        this.startY = event.screenY;
 
         event.dataTransfer.effectAllowed = "all";
 
-        const data = { src: 'comp-holder', compName, phIndex: index };
+        const data = { 
+            src: 'comp-holder', 
+            compName: this.props.compName, 
+            phIndex: this.props.index 
+        };
         event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
+
+        this.props.onSelect( this.props.index );
     }
 
-    function handleDragEnd( event ) {
+    handleDragEnd( event ) {
 
-        const shiftX = event.clientX - startX;
-        const shiftY = event.clientY - startY;
+        const shiftX = event.screenX - this.startX;
+        const shiftY = event.screenY - this.startY;
 
-        const newTop = top + shiftY;
-        const newLeft = left + shiftX;
+        const newTop = this.props.top + shiftY;
+        const newLeft = this.props.left + shiftX;
 
-        onDragEnd( { 
+        this.props.onDragEnd( { 
             top: newTop,
             left: newLeft
         } );
     }
 
-    function handleDrag( event ) {
+    getClassNames() {
 
+        return this.props.isSelected ? `${ css['comp-holder'] } ${ css['comp-holder--selected'] }`
+                                     : css['comp-holder'];
     }
 
-    return  <div className={ css['comp-holder'] }
-                 style={ style }
-                 onDragStart={ handleDragStart }
-                 onDragEnd={ handleDragEnd }
-                 onDrag={ handleDrag }
-                 draggable
-            >
-                <button className={ css['comp-holder-close'] }
-                        onClick={ () => onClose(index) } 
+    handleClick( event ) {
+
+        this.props.onSelect( this.props.index ); 
+    }
+
+    render() {
+
+        const style = { top: this.props.top, left: this.props.left };
+        const Component = compStore.get( this.props.compName ) || ( () => 'n/a' );
+
+        return  <div className={ this.getClassNames() }
+                     style={ style }
+                     onDragStart={ this.handleDragStart.bind(this) }
+                     onDragEnd={ this.handleDragEnd.bind(this) }
+                     onClick={ this.handleClick.bind(this) }
+                     draggable
                 >
-                    x
-                </button>
-                <div className={ css['comp-holder-content'] }>
-                    <Component />
+                    <button className={ css['comp-holder-close'] }
+                            onClick={ () => props.onClose(index) } 
+                    >
+                        x
+                    </button>
+                    <div className={ css['comp-holder-content'] }>
+                        <Component />
+                    </div>
                 </div>
-            </div>
+    }
 
 }
 

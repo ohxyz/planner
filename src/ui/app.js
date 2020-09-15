@@ -9,28 +9,26 @@ import { ResizableProvider } from './resizable-provider';
 import { connect } from 'react-redux';
 import { resizeDesign } from '~/redux/actions';
 import { ReduxedMainContainer } from './main-container';
+import { PropPanel } from './prop-panel';
 
 const ReduxedResizableProvider = connect(
 
     null,
 
-    dispatch => {
+    dispatch => ( {
 
-        return {
+        onResizeEnd: element => {
 
-            onResizeEnd: element => {
+            if ( element.className.includes( 'design' ) ) {
 
-                if ( element.className.includes( 'design' ) ) {
+                const style = window.getComputedStyle( element );
+                const width = parseFloat( style.width );
+                const height = parseFloat( style.height );
 
-                    const style = window.getComputedStyle( element );
-                    const width = parseFloat( style.width );
-                    const height = parseFloat( style.height );
-
-                    dispatch( resizeDesign(width, height) );
-                }
+                dispatch( resizeDesign(width, height) );
             }
         }
-    }
+    } )
 
 )( ResizableProvider );
 
@@ -40,7 +38,7 @@ function App() {
                 <div id="app" className={ css['app'] }>
                     <ToolBar />
                     <CompPanel />
-                    <div className={ css['prop-panel'] }></div>
+                    <PropPanel />
                     <ReduxedMainContainer />
                     <div className={ css['status-bar'] }>
                         <ReduxedZoomMainPanelTool />
