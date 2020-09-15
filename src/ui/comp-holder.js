@@ -1,9 +1,10 @@
-import React from 'react';
 import css from '~/css/comp-holder.module.css';
+import React from 'react';
+import { connect } from 'react-redux';
 import dom from './dom-utils';
 import { compStore } from '~/comp-store';
 
-class CompHolder extends React.Component {
+class _CompHolder extends React.Component {
 
     static defaultProps = {
         top: 0, 
@@ -41,7 +42,7 @@ class CompHolder extends React.Component {
         };
         event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
 
-        this.props.onSelect( this.props.index );
+        this.props.onSelect( this.props.index, this.props.compName );
     }
 
     handleDragEnd( event ) {
@@ -52,7 +53,7 @@ class CompHolder extends React.Component {
         const newTop = this.props.top + shiftY;
         const newLeft = this.props.left + shiftX;
 
-        this.props.onDragEnd( { 
+        this.props.onDragEnd( this.props.index, { 
             top: newTop,
             left: newLeft
         } );
@@ -66,7 +67,7 @@ class CompHolder extends React.Component {
 
     handleClick( event ) {
 
-        this.props.onSelect( this.props.index ); 
+        this.props.onSelect( this.props.index, this.props.compName ); 
     }
 
     render() {
@@ -82,7 +83,7 @@ class CompHolder extends React.Component {
                      draggable
                 >
                     <button className={ css['comp-holder-close'] }
-                            onClick={ () => props.onClose(index) } 
+                            onClick={ () => this.props.onClose(this.props.index) } 
                     >
                         x
                     </button>
@@ -91,7 +92,16 @@ class CompHolder extends React.Component {
                     </div>
                 </div>
     }
-
 }
+
+const CompHolder = connect( null, 
+
+    dispatch => ( {
+        onDragEnd: ( index, pos ) => dispatch( { type: 'comp-holder/drag', index, pos } ),
+        onSelect: (index, compName) => dispatch( { type: 'comp-holder/select', index, compName } ),
+        onClose: index => dispatch( { type: 'comp-holder/remove', index } ),
+    } )
+
+)( _CompHolder);
 
 export { CompHolder }

@@ -2,12 +2,6 @@ import css from '~/css/main-panel.module.css';
 import React from 'react';
 import { connect } from 'react-redux';
 import { CompHolder } from './comp-holder';
-import { 
-    dragCompHolder, 
-    createCompHolder, 
-    removeCompHolder,
-    moveOutCompHolder,
-} from '~/redux/actions';
 import { CompHolder as CompHolderModel } from '~/models';
 import dom from './dom-utils';
 
@@ -20,9 +14,6 @@ function MainPanel( props ) {
         minHeight = 100,
         zoom = 1,
         compHolders = [],
-        onCompHolderDragEnd = () => { throw new Error('onCompHolderDragEnd n/a') },
-        onCompHolderClose = () => { throw new Error('onCompHolderClose n/a') },
-        onCompHolderSelect = () => { throw new Error('onCompHolderSelect n/a') },
         onCompPanelItemDrop = () => { throw new Error('onCompPanelItemDrop n/a') },
         onPlaceholderDrop = () => { throw new Error('onPlaceholderDrop n/a') }
     } = props;
@@ -78,16 +69,21 @@ function MainPanel( props ) {
 
         if ( data.src === 'comp-panel-item' ) {
 
-            onCompPanelItemDrop( new CompHolderModel( {top, left, compName: data.compName} ) );
+            onCompPanelItemDrop( new CompHolderModel( {top, left, compName: data.compName, isSelected: true} ) );
             return;
         }
 
         if ( data.src === 'placeholder' ) {
 
-            onPlaceholderDrop( 
-                new CompHolderModel( {top, left, compName: data.compName} ),
+            onPlaceholderDrop(
+                new CompHolderModel( {
+                    top, 
+                    left,
+                    compName: data.compName, 
+                    isSelected: true
+                } ),
                 data.rowIndex,
-                data.phIndex
+                data.phIndex,
             );
             return;
         }
@@ -109,10 +105,6 @@ function MainPanel( props ) {
                                     left={ holder.left }
                                     compName={ holder.compName }
                                     isSelected={ holder.isSelected }
-                                    onDragEnd={ pos => onCompHolderDragEnd(index, pos) }
-                                    onClose={ index => onCompHolderClose(index) }
-                                    onSelect={ index => onCompHolderSelect(index) }
-
                         />
                     )
                 }
@@ -135,12 +127,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
 
     return {
-        onCompHolderDragEnd: ( index, pos ) => dispatch( dragCompHolder(index, pos) ),
-        onCompHolderClose: index => dispatch( removeCompHolder(index) ),
-        onCompHolderSelect: index => dispatch( { type: 'comp-holder/select', index } ),
-        onCompPanelItemDrop: compHolder => dispatch( createCompHolder(compHolder) ),
+        // compHolder - Defined in `models`
+        onCompPanelItemDrop: compHolder => dispatch( { type: 'comp-holder/create', compHolder } ),
         onPlaceholderDrop: ( compHolder, rowIndex, phIndex ) => {
-            dispatch( moveOutCompHolder(compHolder, rowIndex, phIndex) )
+            dispatch( { type: 'comp-holder/move-out', compHolder, rowIndex, phIndex } )
         }
     }
 };

@@ -23,11 +23,12 @@ export function CompHolder( args={} ) {
     const {
         top = 0,
         left = 0,
-        compName = ''
+        compName = '',
+        isSelected = false
     } = args;
 
     this.top = top;
     this.left = left;
     this.compName = compName;
-    this.isSelected = false;
+    this.isSelected = isSelected;
 }

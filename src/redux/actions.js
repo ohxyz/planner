@@ -43,31 +43,6 @@ export function initMainPanel( width, height ) {
 }
 
 
-/* Comp Holder ************************************************************************************/
-
-export function dragCompHolder( index, pos ) {
-
-    return { type: 'comp-holder/drag', index, pos };
-}
-
-/**
- * @param {CompHolder} compHolder - Defined in `models`
- */
-export function createCompHolder( compHolder ) {
-
-    return { type: 'comp-holder/create', compHolder };
-}
-
-export function removeCompHolder( index ) {
-
-    return { type: 'comp-holder/remove', index };
-}
-
-export function moveOutCompHolder( compHolder, rowIndex, phIndex ) {
-
-    return { type: 'comp-holder/move-out', compHolder, rowIndex, phIndex };
-}
-
 /* Main Container *********************************************************************************/
 
 export function resizeMainContainer( width, height ) {

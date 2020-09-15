@@ -14,7 +14,8 @@ function getInitState() {
     const initState = {
 
         design: {
-            rows: [ 
+            rows: [
+                // debug
                 new Row( 'row-0' )
             ],
             width: defaults.designWidth,
@@ -30,7 +31,10 @@ function getInitState() {
                 new CompHolder( {top: 50, left: 200, compName: 'Text Field' } ),
             ]
         },
-        foo: 'bar'
+        propPanel: {
+            // debug
+            compName: 'comp-0'
+        }
     }
 
     return initState;
@@ -134,7 +138,12 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'comp-holder/create' ) {
 
         const newState = utils.clone( state );
+        
+        newState.mainPanel.compHolders.forEach( ch => {
+            ch.isSelected = false;
+        } )
         newState.mainPanel.compHolders.push( action.compHolder );
+        newState.propPanel.compName = action.compHolder.compName;
 
         return newState;
     }
@@ -153,7 +162,9 @@ export function undoableReducer( state=getInitState(), action ) {
         newState.mainPanel.compHolders.forEach( (ch, idx) => {
 
             idx === action.index ? (ch.isSelected = true) : (ch.isSelected = false);
-        } )
+        } );
+
+        newState.propPanel.compName = action.compName;
 
         return newState;
     }
@@ -161,7 +172,12 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'comp-holder/move-out' ) {
 
         const newState = utils.clone( state );
+
+        newState.mainPanel.compHolders.forEach( ch => {
+            ch.isSelected = false;
+        } )
         newState.mainPanel.compHolders.push( action.compHolder );
+
         const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
         placeholder.compName = '';
 

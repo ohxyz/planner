@@ -22,7 +22,12 @@ function Placeholder( props ) {
 
         if ( !compName ) { return; }
 
-        const data = { src: 'placeholder', compName, rowIndex, phIndex: index };
+        const data = { 
+            src: 'placeholder', 
+            compName, 
+            rowIndex, 
+            phIndex: index
+        };
         event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
     }
 
@@ -67,7 +72,7 @@ function Placeholder( props ) {
         if ( data.src === 'comp-holder' ) {
 
             onCompHolderDrop( {
-                rowIndex, 
+                rowIndex,
                 index, 
                 compName: data.compName, 
                 phIndex: data.phIndex 
