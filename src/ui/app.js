@@ -5,16 +5,10 @@ import { CompPanel } from './comp-panel';
 import { ToolBar } from './tool-bar';
 import { ReduxedZoomMainPanelTool } from './tools/zoom-main-panel';
 import { UndoTool } from './tools/undo';
-import { CompPanelItem as CompPanelItemModel } from '~/models';
 import { ResizableProvider } from './resizable-provider';
 import { connect } from 'react-redux';
 import { resizeDesign } from '~/redux/actions';
 import { ReduxedMainContainer } from './main-container';
-
-const compPanelItems = [
-    new CompPanelItemModel( 'Text Field' ),
-    new CompPanelItemModel( 'Radio Button List' ),
-];
 
 const ReduxedResizableProvider = connect(
 
@@ -45,7 +39,7 @@ function App() {
     return  <ReduxedResizableProvider>
                 <div id="app" className={ css['app'] }>
                     <ToolBar />
-                    <CompPanel items={ compPanelItems } />
+                    <CompPanel />
                     <div className={ css['prop-panel'] }></div>
                     <ReduxedMainContainer />
                     <div className={ css['status-bar'] }>

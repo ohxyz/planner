@@ -7,6 +7,7 @@ const initState ={
         width: -1,
         height: -1,
     },
+    
     mainPanel: {
 
         minWidth: -1,
@@ -30,15 +31,15 @@ export function mainReducer( state=initState, action ) {
         return newState;
     }
 
-    if ( action.type == 'main-panel/init' ) {
+    if ( action.type === 'main-panel/init' ) {
 
         const newState = utils.clone( state );
         const { width, height } = action;
 
         newState.mainContainer.width = width;
         newState.mainContainer.height = height;
-        newState.mainPanel.minWidth = width;
-        newState.mainPanel.minHeight = height;
+        newState.mainPanel.minWidth = width / state.mainPanel.zoom;
+        newState.mainPanel.minHeight = height / state.mainPanel.zoom;
         
         return newState;
     }
