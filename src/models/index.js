@@ -24,11 +24,13 @@ export function CompHolder( args={} ) {
         top = 0,
         left = 0,
         compName = '',
+        compPropDefs = {},
         isSelected = false
     } = args;
 
     this.top = top;
     this.left = left;
     this.compName = compName;
+    this.compPropDefs = {};
     this.isSelected = isSelected;
 }

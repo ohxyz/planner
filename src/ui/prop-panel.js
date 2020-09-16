@@ -1,23 +1,61 @@
 import css from '~/css/prop-panel.module.css';
 import React from 'react';
 import { connect } from 'react-redux';
+import { compStore } from '~/comp-store';
 
 class _PropPanel extends React.Component {
 
     static defaultProps = {
-        compName: 'n/a'
+        compName: 'n/a',
+        propDefs: { 'n': 'a' }
     };
+
+    constructor( props ) {
+
+        super( props );
+    }
 
     render() {
 
-        return  <div className={ css['prop-panel'] }>{ this.props.compName }</div>
+        const comp = compStore.get( this.props.compName );
+
+        return  <div className={ css['prop-panel'] }>
+                    <div>{ this.props.compName }</div>
+                    <div>
+                    {
+                        Object.entries( this.props.propDefs ).map( ( [prop, def] ) => {
+
+                            if ( def.type === 'boolean' ) {
+
+                                return  <div key={prop}>
+                                            <label >
+                                                <input type="checkbox" />
+                                                { def.label }
+                                            </label>
+                                        </div>
+                            }
+
+                            if ( def.type === 'text' ) {
+
+                                return  <div key={prop}>
+                                            <label>
+                                                { def.label }
+                                                <input type="text" defaultValue={def.value} />
+                                            </label>
+                                        </div>
+                            }
+                        } )
+                    }
+                    </div>
+                </div>
     }
 }
 
 const PropPanel = connect( 
 
     state => ( {
-        compName: state.undoable.present.propPanel.compName
+        compName: state.undoable.present.propPanel.compName,
+        propDefs: state.undoable.present.propPanel.propDefs
     } )
 
 )( _PropPanel );

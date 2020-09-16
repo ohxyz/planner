@@ -5,11 +5,12 @@ class ComponentStorage {
         this.components = [];
     }
 
-    add( name, component ) {
+    add( name, component, propDefs={} ) {
 
         this.components.push( {
             name,
-            component
+            component,
+            propDefs
         } );
     }
 
@@ -18,7 +19,8 @@ class ComponentStorage {
         for ( let i = 0; i < this.components.length; ++i ) {
 
             if ( name === this.components[i].name ) {
-                return this.components[i].component;
+
+                return this.components[i];
             }
         }
 
@@ -32,6 +34,8 @@ class ComponentStorage {
 }
 
 const compStore = new ComponentStorage();
+
+window.compStore = compStore;
 
 export {
     

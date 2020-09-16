@@ -16,7 +16,9 @@ function Placeholder( props ) {
     } = props;
     
     const [ className, setClassName ] = useState( css['placeholder'] );
-    const Component = compStore.get( compName ) || ( () => '' );
+    const comp = compStore.get( compName );
+
+    const Component = comp ? comp.component : ( () => '' );
 
     function handleDragStart( event ) {
 

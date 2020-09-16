@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CompHolder } from './comp-holder';
 import { CompHolder as CompHolderModel } from '~/models';
+import { compStore } from '~/comp-store';
 import dom from './dom-utils';
 
 function MainPanel( props ) {
@@ -67,21 +68,26 @@ function MainPanel( props ) {
         const left = event.clientX - innerRect.x;
         const top = event.clientY - innerRect.y;
 
+        const compHolderModel = new CompHolderModel( {
+            top, 
+            left, 
+            compName: data.compName,
+            isSelected: true
+        } );
+
         if ( data.src === 'comp-panel-item' ) {
 
-            onCompPanelItemDrop( new CompHolderModel( {top, left, compName: data.compName, isSelected: true} ) );
+            const comp = compStore.get( data.compName );
+            compHolderModel.compPropDefs = comp.propDefs;
+
+            onCompPanelItemDrop( compHolderModel );
             return;
         }
 
         if ( data.src === 'placeholder' ) {
 
             onPlaceholderDrop(
-                new CompHolderModel( {
-                    top, 
-                    left,
-                    compName: data.compName, 
-                    isSelected: true
-                } ),
+                compHolderModel,
                 data.rowIndex,
                 data.phIndex,
             );
@@ -104,6 +110,7 @@ function MainPanel( props ) {
                                     top={ holder.top } 
                                     left={ holder.left }
                                     compName={ holder.compName }
+                                    compPropDefs={ holder.compPropDefs }
                                     isSelected={ holder.isSelected }
                         />
                     )
@@ -128,7 +135,9 @@ const mapDispatchToProps = dispatch => {
 
     return {
         // compHolder - Defined in `models`
-        onCompPanelItemDrop: compHolder => dispatch( { type: 'comp-holder/create', compHolder } ),
+        onCompPanelItemDrop: compHolder => {
+            dispatch( { type: 'comp-holder/create', compHolder } )
+        },
         onPlaceholderDrop: ( compHolder, rowIndex, phIndex ) => {
             dispatch( { type: 'comp-holder/move-out', compHolder, rowIndex, phIndex } )
         }

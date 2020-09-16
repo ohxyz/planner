@@ -10,6 +10,7 @@ class _CompHolder extends React.Component {
         top: 0, 
         left: 0,
         compName: 'n/a',
+        compPropDefs: { 'n': 'a' },
         index: -1,
         isSelected: false,
         onDragEnd: () => { throw new Error('onDragEnd n/a') },
@@ -73,7 +74,15 @@ class _CompHolder extends React.Component {
     render() {
 
         const style = { top: this.props.top, left: this.props.left };
-        const Component = compStore.get( this.props.compName ) || ( () => 'n/a' );
+        const Component = compStore.get( this.props.compName ).component || ( () => 'n/a' );
+        const props = {};
+
+        for ( const prop in this.props.compPropDefs ) {
+
+            props[prop] = this.props.compPropDefs[prop]['value'];
+        }
+
+        console.log( '@@', props )
 
         return  <div className={ this.getClassNames() }
                      style={ style }
@@ -88,7 +97,7 @@ class _CompHolder extends React.Component {
                         x
                     </button>
                     <div className={ css['comp-holder-content'] }>
-                        <Component />
+                        <Component {...props} />
                     </div>
                 </div>
     }

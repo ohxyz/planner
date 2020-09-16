@@ -29,11 +29,13 @@ function getInitState() {
                 // debug
                 new CompHolder( {top: 50, left: 50, compName: 'Checkbox' } ),
                 new CompHolder( {top: 50, left: 200, compName: 'Text Field' } ),
+                new CompHolder( {top: 200, left: 50, compName: 'Button' } ),
             ]
         },
         propPanel: {
             // debug
-            compName: 'comp-0'
+            compName: 'comp-0',
+            propDefs: {}
         }
     }
 
@@ -88,7 +90,6 @@ export function undoableReducer( state=getInitState(), action ) {
     
     if ( action.type === 'design/remove-placeholder' ) {
 
-        console.log( action );
         const { rowIndex, phIndex } = action;
 
         const newState = utils.clone( state );
@@ -141,9 +142,12 @@ export function undoableReducer( state=getInitState(), action ) {
         
         newState.mainPanel.compHolders.forEach( ch => {
             ch.isSelected = false;
-        } )
+        } );
         newState.mainPanel.compHolders.push( action.compHolder );
-        newState.propPanel.compName = action.compHolder.compName;
+        newState.propPanel = {
+            compName: action.compHolder.compName,
+            propDefs: action.compHolder.compPropDefs,
+        };
 
         return newState;
     }
