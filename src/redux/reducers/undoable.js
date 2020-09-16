@@ -197,13 +197,13 @@ export function undoableReducer( state=getInitState(), action ) {
         return newState;
     }
 
-    if ( action.type === 'placeholder/add-comp-from-placeholder' ) {
+    if ( action.type === 'placeholder/add-comp-from-comp-holder' ) {
 
         const newState = utils.clone( state );
         const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.index ];
 
         placeholder.compName = action.compName;
-        newState.mainPanel.compHolders.splice( action.phIndex, 1 );
+        newState.mainPanel.compHolders.splice( action.chIndex, 1 );
 
         return newState;
     }

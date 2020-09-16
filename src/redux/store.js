@@ -17,7 +17,7 @@ const store = createStore(
 
 store.subscribe( () => {
 
-    // console.log( '[State]', store.getState() );
+    console.log( '[State]', store.getState().undoable.present );
 } );
 
 function undo() {

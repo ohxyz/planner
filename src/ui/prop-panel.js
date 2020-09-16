@@ -29,7 +29,7 @@ class _PropPanel extends React.Component {
 
                                 return  <div key={prop}>
                                             <label >
-                                                <input type="checkbox" />
+                                                <input type="checkbox" defaultChecked={def.value} />
                                                 { def.label }
                                             </label>
                                         </div>

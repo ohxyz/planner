@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import dom from './dom-utils';
 import { compStore } from '~/comp-store';
+import { misc } from '~/misc';
 
 class _CompHolder extends React.Component {
 
@@ -39,7 +40,7 @@ class _CompHolder extends React.Component {
         const data = { 
             src: 'comp-holder', 
             compName: this.props.compName, 
-            phIndex: this.props.index 
+            chIndex: this.props.index,
         };
         event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
 
@@ -47,6 +48,13 @@ class _CompHolder extends React.Component {
     }
 
     handleDragEnd( event ) {
+
+        // Without following, the event listener gets called after comp-holder dropped to place-holder
+        // In this case, new position will apply to another comp-holder
+        // because the inteneded comp-holder is already removed
+        if ( misc.indexOfCompHolderDropped === this.props.index ) {
+            return;
+        }
 
         const shiftX = event.screenX - this.startX;
         const shiftY = event.screenY - this.startY;
@@ -81,8 +89,6 @@ class _CompHolder extends React.Component {
 
             props[prop] = this.props.compPropDefs[prop]['value'];
         }
-
-        console.log( '@@', props )
 
         return  <div className={ this.getClassNames() }
                      style={ style }

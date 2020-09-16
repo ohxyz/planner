@@ -2,6 +2,7 @@ import css from '~/css/placeholder.module.css';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { compStore } from '~/comp-store';
+import { misc } from '~/misc';
 
 function Placeholder( props ) {
 
@@ -73,13 +74,19 @@ function Placeholder( props ) {
 
         if ( data.src === 'comp-holder' ) {
 
+            console.log( 'onCompHolderDrop' );
+
             onCompHolderDrop( {
                 rowIndex,
                 index, 
                 compName: data.compName, 
-                phIndex: data.phIndex 
+                chIndex: data.chIndex 
             } );
+
+            misc.indexOfCompHolderDropped = data.chIndex;
+
             setClassName( css['placeholder'] );
+            
             return;
         }
     }
@@ -113,7 +120,7 @@ function mapDispatchToProps( dispatch ) {
             dispatch( { type: 'placeholder/add-comp-from-comp-panel', rowIndex, index, compName } )
         },
         onCompHolderDrop: payload => {
-            dispatch( { type: 'placeholder/add-comp-from-placeholder', ...payload } )
+            dispatch( { type: 'placeholder/add-comp-from-comp-holder', ...payload } )
         }
     }   
 }

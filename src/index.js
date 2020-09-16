@@ -34,7 +34,10 @@ compStore.add( 'Button', Button, {
     children: { type: 'text', label: 'Button content', value: 'hi' }
 } );
 
-compStore.add( 'Checkbox', Checkbox );
+compStore.add( 'Checkbox', Checkbox, {
+    label: { type: 'text', label: 'Label', value: 'hello' }
+});
+
 compStore.add( 'Text Field', TextField );
 
 const result = ButtonDef();
