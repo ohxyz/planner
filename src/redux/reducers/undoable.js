@@ -35,7 +35,7 @@ function getInitState() {
         propPanel: {
             // debug
             compName: 'comp-0',
-            propDefs: {}
+            compPropDefs: {}
         }
     }
 
@@ -146,7 +146,7 @@ export function undoableReducer( state=getInitState(), action ) {
         newState.mainPanel.compHolders.push( action.compHolder );
         newState.propPanel = {
             compName: action.compHolder.compName,
-            propDefs: action.compHolder.compPropDefs,
+            compPropDefs: action.compHolder.compPropDefs,
         };
 
         return newState;
@@ -169,6 +169,9 @@ export function undoableReducer( state=getInitState(), action ) {
         } );
 
         newState.propPanel.compName = action.compName;
+
+        const compPropDefs = utils.clone( newState.mainPanel.compHolders[action.index].compPropDefs );
+        newState.propPanel.compPropDefs = compPropDefs;
 
         return newState;
     }

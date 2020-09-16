@@ -79,6 +79,13 @@ class _CompHolder extends React.Component {
         this.props.onSelect( this.props.index, this.props.compName ); 
     }
 
+    handleCloseClick( event ) {
+
+        // Cancel parent's onclick event;
+        event.stopPropagation();
+        this.props.onClose(this.props.index);
+    }
+
     render() {
 
         const style = { top: this.props.top, left: this.props.left };
@@ -98,7 +105,7 @@ class _CompHolder extends React.Component {
                      draggable
                 >
                     <button className={ css['comp-holder-close'] }
-                            onClick={ () => this.props.onClose(this.props.index) } 
+                            onClick={ this.handleCloseClick.bind(this) } 
                     >
                         x
                     </button>

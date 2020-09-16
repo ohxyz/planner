@@ -7,7 +7,7 @@ class _PropPanel extends React.Component {
 
     static defaultProps = {
         compName: 'n/a',
-        propDefs: { 'n': 'a' }
+        compPropDefs: { 'n': 'a' }
     };
 
     constructor( props ) {
@@ -23,7 +23,7 @@ class _PropPanel extends React.Component {
                     <div>{ this.props.compName }</div>
                     <div>
                     {
-                        Object.entries( this.props.propDefs ).map( ( [prop, def] ) => {
+                        Object.entries( this.props.compPropDefs ).map( ( [prop, def] ) => {
 
                             if ( def.type === 'boolean' ) {
 
@@ -55,7 +55,7 @@ const PropPanel = connect(
 
     state => ( {
         compName: state.undoable.present.propPanel.compName,
-        propDefs: state.undoable.present.propPanel.propDefs
+        compPropDefs: state.undoable.present.propPanel.compPropDefs
     } )
 
 )( _PropPanel );
