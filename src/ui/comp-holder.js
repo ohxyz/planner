@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import dom from './dom-utils';
 import { compStore } from '~/comp-store';
-import { misc } from '~/misc';
+import utils from '~/utils';
 
 class _CompHolder extends React.Component {
 
@@ -52,7 +52,7 @@ class _CompHolder extends React.Component {
         // Without following, the event listener gets called after comp-holder dropped to place-holder
         // In this case, new position will apply to another comp-holder
         // because the inteneded comp-holder is already removed
-        if ( misc.indexOfCompHolderDropped === this.props.index ) {
+        if ( event.dataTransfer.dropEffect === 'copy' ) {
             return;
         }
 
@@ -74,14 +74,18 @@ class _CompHolder extends React.Component {
                                      : css['comp-holder'];
     }
 
-    handleClick( event ) {
+    handleSelect( event ) {
+
+        if ( this.props.isSelected ) {
+            return;
+        }
 
         this.props.onSelect( this.props.index, this.props.compName ); 
     }
 
     handleCloseClick( event ) {
 
-        // Cancel parent's onclick event;
+        // Cancel parent's onclick event handler;
         event.stopPropagation();
         this.props.onClose(this.props.index);
     }
@@ -90,18 +94,18 @@ class _CompHolder extends React.Component {
 
         const style = { top: this.props.top, left: this.props.left };
         const Component = compStore.get( this.props.compName ).component || ( () => 'n/a' );
-        const props = {};
+        const compProps = {};
 
         for ( const prop in this.props.compPropDefs ) {
 
-            props[prop] = this.props.compPropDefs[prop]['value'];
+            compProps[prop] = this.props.compPropDefs[prop]['value'];
         }
 
         return  <div className={ this.getClassNames() }
                      style={ style }
                      onDragStart={ this.handleDragStart.bind(this) }
                      onDragEnd={ this.handleDragEnd.bind(this) }
-                     onClick={ this.handleClick.bind(this) }
+                     onClick={ this.handleSelect.bind(this) }
                      draggable
                 >
                     <button className={ css['comp-holder-close'] }
@@ -110,7 +114,7 @@ class _CompHolder extends React.Component {
                         x
                     </button>
                     <div className={ css['comp-holder-content'] }>
-                        <Component {...props} />
+                        <Component key={utils.genRandomString()} {...compProps} />
                     </div>
                 </div>
     }

@@ -27,15 +27,32 @@ function getInitState() {
             height: defaults.mainPanelHeight,
             compHolders: [
                 // debug
-                new CompHolder( {top: 50, left: 50, compName: 'Checkbox' } ),
-                new CompHolder( {top: 50, left: 200, compName: 'Text Field' } ),
-                new CompHolder( {top: 200, left: 50, compName: 'Button' } ),
+                new CompHolder( {top: 50, left: 200, compName: 'Text Field', compPropDefs: {
+                    label: { label: 'Heading', type: 'text', value: 'My text' },
+                    error: { label: 'has error', type: 'boolean', value: true },
+                    errorMessage: { label: 'Error message', type: 'text', value: 'error!'}
+
+                } } ),
+                new CompHolder( {
+                    top: 200, 
+                    left: 51, 
+                    compName: 'Button', 
+                    compPropDefs: {
+                        secondary: { label: 'Second', type: 'boolean', value: false },
+                        children: { label: 'content', type: 'text', value: 'submit' }
+                    }
+                } ),
+                new CompHolder( {top: 50, left: 50, compName: 'Checkbox', compPropDefs: {
+                    defaultChecked: { label: 'Check', type: 'boolean', value: true },
+                    label: { label: 'Text', type: 'text', value: 'check!' }
+                } } ),
             ]
         },
         propPanel: {
             // debug
             compName: 'comp-0',
-            compPropDefs: {}
+            compPropDefs: {},
+            chIndex: -1
         }
     }
 
@@ -168,10 +185,11 @@ export function undoableReducer( state=getInitState(), action ) {
             idx === action.index ? (ch.isSelected = true) : (ch.isSelected = false);
         } );
 
-        newState.propPanel.compName = action.compName;
-
         const compPropDefs = utils.clone( newState.mainPanel.compHolders[action.index].compPropDefs );
+
+        newState.propPanel.compName = action.compName;
         newState.propPanel.compPropDefs = compPropDefs;
+        newState.propPanel.chIndex = action.index;
 
         return newState;
     }
@@ -189,6 +207,20 @@ export function undoableReducer( state=getInitState(), action ) {
         placeholder.compName = '';
 
         return newState;
+    }
+
+    if ( action.type === 'comp-holder/update' ) {
+
+        const newState = utils.clone( state );
+        console.log( '@@', action );
+
+        const compHolder = newState.mainPanel.compHolders[action.chIndex];
+        compHolder.compPropDefs[action.prop].value = action.value;
+
+        newState.propPanel.compPropDefs[action.prop].value = action.value;
+
+        return newState;
+
     }
 
     if ( action.type === 'placeholder/add-comp-from-comp-panel' ) {

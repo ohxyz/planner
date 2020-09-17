@@ -31,6 +31,19 @@ export function CompHolder( args={} ) {
     this.top = top;
     this.left = left;
     this.compName = compName;
-    this.compPropDefs = {};
+    this.compPropDefs = compPropDefs;
     this.isSelected = isSelected;
+}
+
+export function PropDef( args={} ) {
+
+    const {
+        label = 'Label',
+        type = 'text',
+        value = ''
+    } = args;
+
+    this.label = label;
+    this.type = type;
+    this.value = value;
 }
