@@ -164,6 +164,7 @@ export function undoableReducer( state=getInitState(), action ) {
         newState.propPanel = {
             compName: action.compHolder.compName,
             compPropDefs: action.compHolder.compPropDefs,
+            chIndex: newState.mainPanel.compHolders.length - 1
         };
 
         return newState;
