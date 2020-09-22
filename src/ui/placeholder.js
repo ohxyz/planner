@@ -2,6 +2,7 @@ import css from '~/css/placeholder.module.css';
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { compStore } from '~/comp-store';
+import { VendorComp } from './vendor-comp';
 
 function Placeholder( props ) {
 
@@ -10,15 +11,13 @@ function Placeholder( props ) {
         rowIndex = -1,
         index = -1,
         compName = '',
+        compPropDefs = {},
         onRemoveClick = () => { throw new Error('onRemoveClick n/a') },
         onCompPanelItemDrop = () => { throw new Error('onCompPanelItemDrop n/a') },
         onCompHolderDrop = () => { throw new Error('onCompHolderDrop n/a') },
     } = props;
     
     const [ className, setClassName ] = useState( css['placeholder'] );
-    const comp = compStore.get( compName );
-
-    const Component = comp ? comp.component : ( () => '' );
 
     function handleDragStart( event ) {
 
@@ -26,7 +25,7 @@ function Placeholder( props ) {
 
         const data = { 
             src: 'placeholder', 
-            compName, 
+            compName,
             rowIndex, 
             phIndex: index
         };
@@ -75,8 +74,7 @@ function Placeholder( props ) {
 
             onCompHolderDrop( {
                 rowIndex,
-                index, 
-                compName: data.compName, 
+                phIndex: index, 
                 chIndex: data.chIndex 
             } );
 
@@ -100,7 +98,7 @@ function Placeholder( props ) {
                     x
                 </button>
                 <div className={ css['placeholder__content'] }>
-                    <Component />
+                    <VendorComp name={ compName } propDefs={ compPropDefs } />
                 </div>
             </div>
 }
@@ -111,8 +109,8 @@ function mapDispatchToProps( dispatch ) {
         onRemoveClick: ( rowIndex, phIndex ) => {
             dispatch( { type: 'design/remove-placeholder', rowIndex, phIndex } )
         },
-        onCompPanelItemDrop: ( rowIndex, index, compName ) => {
-            dispatch( { type: 'placeholder/add-comp-from-comp-panel', rowIndex, index, compName } )
+        onCompPanelItemDrop: ( rowIndex, phIndex, compName ) => {
+            dispatch( { type: 'placeholder/add-comp-from-comp-panel', rowIndex, phIndex, compName } )
         },
         onCompHolderDrop: payload => {
             dispatch( { type: 'placeholder/add-comp-from-comp-holder', ...payload } )

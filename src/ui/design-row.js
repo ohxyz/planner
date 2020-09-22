@@ -44,6 +44,7 @@ function DesignRow( props ) {
                             index={idx} 
                             rowIndex={rowIndex} 
                             compName={ph.compName}
+                            compPropDefs={ph.compPropDefs}
                         />
                     )
                 }

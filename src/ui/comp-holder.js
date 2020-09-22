@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import dom from './dom-utils';
 import { compStore } from '~/comp-store';
 import utils from '~/utils';
+import { VendorComp } from './vendor-comp';
 
 class _CompHolder extends React.Component {
 
@@ -93,13 +94,6 @@ class _CompHolder extends React.Component {
     render() {
 
         const style = { top: this.props.top, left: this.props.left };
-        const Component = compStore.get( this.props.compName ).component || ( () => 'n/a' );
-        const compProps = {};
-
-        for ( const prop in this.props.compPropDefs ) {
-
-            compProps[prop] = this.props.compPropDefs[prop]['value'];
-        }
 
         return  <div className={ this.getClassNames() }
                      style={ style }
@@ -114,7 +108,10 @@ class _CompHolder extends React.Component {
                         x
                     </button>
                     <div className={ css['comp-holder-content'] }>
-                        <Component key={utils.genRandomString()} {...compProps} />
+                        <VendorComp key={ utils.genRandomString() } 
+                                    name={ this.props.compName } 
+                                    propDefs={ this.props.compPropDefs } 
+                        />
                     </div>
                 </div>
     }

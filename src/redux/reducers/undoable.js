@@ -213,8 +213,6 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'comp-holder/update' ) {
 
         const newState = utils.clone( state );
-        console.log( '@@', action );
-
         const compHolder = newState.mainPanel.compHolders[action.chIndex];
         compHolder.compPropDefs[action.prop].value = action.value;
 
@@ -227,7 +225,7 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'placeholder/add-comp-from-comp-panel' ) {
 
         const newState = utils.clone( state );
-        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.index ];
+        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
         placeholder.compName = action.compName;
 
         return newState;
@@ -235,10 +233,14 @@ export function undoableReducer( state=getInitState(), action ) {
 
     if ( action.type === 'placeholder/add-comp-from-comp-holder' ) {
 
+        console.log( '@@@', action );
         const newState = utils.clone( state );
-        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.index ];
+        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
+        const compHolder = utils.clone( newState.mainPanel.compHolders[action.chIndex] ) ;
 
-        placeholder.compName = action.compName;
+        placeholder.compName = compHolder.compName;
+        placeholder.compPropDefs = compHolder.compPropDefs;
+
         newState.mainPanel.compHolders.splice( action.chIndex, 1 );
 
         return newState;

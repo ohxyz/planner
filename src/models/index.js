@@ -11,6 +11,7 @@ export function Placeholder() {
 
     this.id = utils.genRandomString();
     this.compName = '';
+    this.compPropDefs = {};
 }
 
 export function CompPanelItem( name ) {
