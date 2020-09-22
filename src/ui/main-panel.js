@@ -139,7 +139,7 @@ const mapDispatchToProps = dispatch => {
             dispatch( { type: 'comp-holder/create', compHolder } )
         },
         onPlaceholderDrop: ( compHolder, rowIndex, phIndex ) => {
-            dispatch( { type: 'comp-holder/move-out', compHolder, rowIndex, phIndex } )
+            dispatch( { type: 'vendor-comp/move-out-of-placeholder', compHolder, rowIndex, phIndex } )
         }
     }
 };

@@ -113,7 +113,7 @@ const PropPanel = connect(
     } ),
 
     dispatch => ( {
-        onUpdate: args => dispatch( { type: 'comp-holder/update', ...args } )
+        onUpdate: args => dispatch( { type: 'vendor-comp/update', ...args } )
     } )
 
 )( _PropPanel );

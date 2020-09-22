@@ -195,22 +195,27 @@ export function undoableReducer( state=getInitState(), action ) {
         return newState;
     }
 
-    if ( action.type === 'comp-holder/move-out' ) {
+    if ( action.type === 'vendor-comp/move-out-of-placeholder' ) {
 
         const newState = utils.clone( state );
+        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
+        placeholder.compName = '';
 
         newState.mainPanel.compHolders.forEach( ch => {
             ch.isSelected = false;
         } )
-        newState.mainPanel.compHolders.push( action.compHolder );
 
-        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
-        placeholder.compName = '';
+        const newCompHolder = utils.clone( action.compHolder );
+        newCompHolder.compPropDefs = utils.clone( placeholder.compPropDefs );
+        newState.mainPanel.compHolders.push( newCompHolder );
+        newState.propPanel.compName = newCompHolder.compName;
+        newState.propPanel.compPropDefs = utils.clone( placeholder.compPropDefs );
+        newState.propPanel.chIndex = newState.mainPanel.compHolders.length - 1;
 
         return newState;
     }
 
-    if ( action.type === 'comp-holder/update' ) {
+    if ( action.type === 'vendor-comp/update' ) {
 
         const newState = utils.clone( state );
         const compHolder = newState.mainPanel.compHolders[action.chIndex];
@@ -233,7 +238,6 @@ export function undoableReducer( state=getInitState(), action ) {
 
     if ( action.type === 'placeholder/add-comp-from-comp-holder' ) {
 
-        console.log( '@@@', action );
         const newState = utils.clone( state );
         const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
         const compHolder = utils.clone( newState.mainPanel.compHolders[action.chIndex] ) ;
