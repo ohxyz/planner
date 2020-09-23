@@ -266,19 +266,20 @@ export function undoableReducer( state=getInitState(), action ) {
 
         const newState = utils.clone( state );
         const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
-        const compHolder = utils.clone( newState.mainPanel.compHolders[action.chIndex] );
-        const compHolder2 = utils.clone( newState.mainPanel.compHolders[action.chIndex] );
-
-        placeholder.compName = compHolder.compName;
-        placeholder.compPropDefs = compHolder.compPropDefs;
+        
+        const compHolderCopy = utils.clone( newState.mainPanel.compHolders[action.chIndex] );
+        placeholder.compName = compHolderCopy.compName;
+        placeholder.compPropDefs = compHolderCopy.compPropDefs;
         placeholder.isSelected = true;
-        newState.mainPanel.compHolders.splice( action.chIndex, 1 );
 
-        newState.propPanel.compName = compHolder2.compName;
-        newState.propPanel.compPropDefs = compHolder2.compPropDefs;
+        const compHolderCopy2 = utils.clone( newState.mainPanel.compHolders[action.chIndex] );
+        newState.propPanel.compName = compHolderCopy2.compName;
+        newState.propPanel.compPropDefs = compHolderCopy2.compPropDefs;
         newState.propPanel.rowIndex = action.rowIndex;
         newState.propPanel.phIndex = action.phIndex;
         newState.propPanel.chIndex = -1;
+
+        newState.mainPanel.compHolders.splice( action.chIndex, 1 );
 
         return newState;
     }

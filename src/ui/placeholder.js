@@ -34,12 +34,16 @@ class Placeholder extends React.Component {
 
         if ( !this.props.compName ) { return; }
 
+        // Set an effect to avoid, in some cases, text is copied to a component. eg. Text Field
+        event.dataTransfer.effectAllowed = 'move';
+        
         const data = { 
             src: 'placeholder', 
             compName: this.props.compName,
             rowIndex: this.props.rowIndex,
             phIndex: this.props.index
         };
+
         event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
     }
 
@@ -116,9 +120,15 @@ class Placeholder extends React.Component {
 
     render() {
 
-        const className = this.props.isSelected 
-                        ? this.state.className + ' ' + css['placeholder--selected']
-                        : this.state.className;
+        let className = this.props.isSelected 
+                      ? this.state.className + ' ' + css['placeholder--selected']
+                      : this.state.className;
+
+        // In some cases, `dragleave` event is not triggered, eg. Text Field leaves placeholder
+        // Make sure placeholder's style is set to original
+        if ( !this.props.compName ) {
+            className = css['placeholder'];
+        }
 
         return  <div className={ className }
                      onDragStart={ this.handleDragStart.bind(this) }
