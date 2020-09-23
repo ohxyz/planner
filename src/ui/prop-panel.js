@@ -10,6 +10,8 @@ class _PropPanel extends React.Component {
         compName: 'n/a',
         compPropDefs: { 'n': 'a' },
         chIndex: -1,
+        rowIndex: -1,
+        phIndex: -1,
         onUpdate: ( {chIndex, prop, value} ) => { throw new Error('onUpdate n/a') }
     };
 
@@ -25,6 +27,8 @@ class _PropPanel extends React.Component {
 
         this.props.onUpdate( { 
             chIndex: this.props.chIndex,
+            rowIndex: this.props.rowIndex,
+            phIndex: this.props.phIndex,
             prop: propName,
             value: event.target.checked
         } );
@@ -34,6 +38,8 @@ class _PropPanel extends React.Component {
 
         this.props.onUpdate( { 
             chIndex: this.props.chIndex,
+            rowIndex: this.props.rowIndex,
+            phIndex: this.props.phIndex,
             prop: propName,
             value: event.target.value
         } );
@@ -42,6 +48,11 @@ class _PropPanel extends React.Component {
     handleFormFieldFocus( event ) {
 
         this.hasFocusedElement = true;
+    }
+
+    handleFormFieldBlur( event ) {
+
+        this.hasFocusedElement = false;
     }
 
     componentDidUpdate() {
@@ -72,6 +83,7 @@ class _PropPanel extends React.Component {
                                                        defaultChecked={ def.value }
                                                        onChange={ event => this.handleCheckboxChange( event, prop ) }
                                                        onFocus={ this.handleFormFieldFocus.bind(this) }
+                                                       onBlur={ this.handleFormFieldBlur.bind(this) }
                                                        key={ def.value }
                                                        ref={ this.formFieldRef }
                                                 />
@@ -90,6 +102,7 @@ class _PropPanel extends React.Component {
                                                        defaultValue={ def.value }
                                                        onChange={ event => this.handleTextFieldChange( event, prop ) }
                                                        onFocus={ this.handleFormFieldFocus.bind(this) }
+                                                       onBlur={ this.handleFormFieldBlur.bind(this) }
                                                        size={ 10 }
                                                        key={ def.value }
                                                        ref={ this.formFieldRef }
@@ -110,6 +123,8 @@ const PropPanel = connect(
         compName: state.undoable.present.propPanel.compName,
         compPropDefs: state.undoable.present.propPanel.compPropDefs,
         chIndex: state.undoable.present.propPanel.chIndex,
+        rowIndex: state.undoable.present.propPanel.rowIndex,
+        phIndex: state.undoable.present.propPanel.phIndex
     } ),
 
     dispatch => ( {

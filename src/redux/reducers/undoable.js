@@ -1,5 +1,5 @@
 import utils from '~/utils';
-import { Row, Placeholder, CompHolder } from '~/models';
+import { Row, Placeholder, CompHolder, PropPanel } from '~/models';
 
 const defaults = {
 
@@ -48,17 +48,27 @@ function getInitState() {
                 } } ),
             ]
         },
-        propPanel: {
-            // debug
-            compName: 'comp-0',
-            compPropDefs: {},
-            chIndex: -1
-        }
+        propPanel: new PropPanel( { compName: 'none' } )
     }
 
     return initState;
 }
 
+function deselectAllCompHolders( state ) {
+
+    state.mainPanel.compHolders.forEach( ch => {
+        ch.isSelected = false;
+    } );
+}
+
+function deselectAllPlaceholders( state ) {
+
+    state.design.rows.forEach( row => {
+        row.placeholders.forEach( ph => {
+            ph.isSelected = false;
+        } )
+    } );
+}
 
 export function undoableReducer( state=getInitState(), action ) {
 
@@ -182,9 +192,9 @@ export function undoableReducer( state=getInitState(), action ) {
 
         const newState = utils.clone( state );
         newState.mainPanel.compHolders.forEach( (ch, idx) => {
-
             idx === action.index ? (ch.isSelected = true) : (ch.isSelected = false);
         } );
+        deselectAllPlaceholders( newState );
 
         const compPropDefs = utils.clone( newState.mainPanel.compHolders[action.index].compPropDefs );
 
@@ -198,19 +208,23 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'vendor-comp/move-out-of-placeholder' ) {
 
         const newState = utils.clone( state );
-        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
-        placeholder.compName = '';
 
-        newState.mainPanel.compHolders.forEach( ch => {
-            ch.isSelected = false;
-        } )
+        deselectAllCompHolders( newState );
+        deselectAllPlaceholders( newState );
 
         const newCompHolder = utils.clone( action.compHolder );
+        const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
+
         newCompHolder.compPropDefs = utils.clone( placeholder.compPropDefs );
         newState.mainPanel.compHolders.push( newCompHolder );
         newState.propPanel.compName = newCompHolder.compName;
         newState.propPanel.compPropDefs = utils.clone( placeholder.compPropDefs );
         newState.propPanel.chIndex = newState.mainPanel.compHolders.length - 1;
+        newState.propPanel.rowIndex = -1;
+        newState.propPanel.phIndex = -1;
+
+        placeholder.compName = '';
+        placeholder.compPropDefs = {};
 
         return newState;
     }
@@ -218,9 +232,21 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'vendor-comp/update' ) {
 
         const newState = utils.clone( state );
-        const compHolder = newState.mainPanel.compHolders[action.chIndex];
-        compHolder.compPropDefs[action.prop].value = action.value;
+        let target = null;
 
+        console.log( '@@', action );
+
+        if ( action.chIndex !== -1 && action.rowIndex === -1 && action.phIndex === -1 ) {
+            target = newState.mainPanel.compHolders[action.chIndex];
+        }
+        else if ( action.chIndex === -1 && action.rowIndex !== -1 && action.phIndex !== -1 ) {
+            target = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
+        }
+        else {
+            throw new Error( 'Debug chIndex, rowIndex and phIndex' );
+        }
+
+        target.compPropDefs[action.prop].value = action.value;
         newState.propPanel.compPropDefs[action.prop].value = action.value;
 
         return newState;
@@ -240,12 +266,19 @@ export function undoableReducer( state=getInitState(), action ) {
 
         const newState = utils.clone( state );
         const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
-        const compHolder = utils.clone( newState.mainPanel.compHolders[action.chIndex] ) ;
+        const compHolder = utils.clone( newState.mainPanel.compHolders[action.chIndex] );
+        const compHolder2 = utils.clone( newState.mainPanel.compHolders[action.chIndex] );
 
         placeholder.compName = compHolder.compName;
         placeholder.compPropDefs = compHolder.compPropDefs;
-
+        placeholder.isSelected = true;
         newState.mainPanel.compHolders.splice( action.chIndex, 1 );
+
+        newState.propPanel.compName = compHolder2.compName;
+        newState.propPanel.compPropDefs = compHolder2.compPropDefs;
+        newState.propPanel.rowIndex = action.rowIndex;
+        newState.propPanel.phIndex = action.phIndex;
+        newState.propPanel.chIndex = -1;
 
         return newState;
     }
@@ -253,6 +286,8 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'placeholder/select' ) {
 
         const newState = utils.clone( state );
+
+        deselectAllCompHolders( newState );
 
         newState.design.rows.forEach( (row, rowIndex) => {
 
@@ -265,7 +300,7 @@ export function undoableReducer( state=getInitState(), action ) {
                     ph.isSelected = false;
                 }
             } )
-        } )
+        } );
 
         return newState;
     }

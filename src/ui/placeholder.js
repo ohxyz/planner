@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compStore } from '~/comp-store';
 import { VendorComp } from './vendor-comp';
+import utils from '~/utils';
 
 class Placeholder extends React.Component {
 
@@ -77,12 +78,13 @@ class Placeholder extends React.Component {
             return;
         }
 
+        this.setState( {
+            className: css['placeholder'] 
+        } );
+
         if ( data.src === 'comp-panel-item' ) {
 
             this.props.onCompPanelItemDrop( this.props.rowIndex, this.props.index, data.compName );
-            this.setState( {
-                className: css['placeholder'] 
-            } );
             return;
         }
 
@@ -93,47 +95,50 @@ class Placeholder extends React.Component {
                 phIndex: this.props.index, 
                 chIndex: data.chIndex 
             } );
-
-            this.setState( {
-                className: css['placeholder'] 
-            } );
-            
             return;
         }
     }
 
-    handleClick( event ) {
+    handleSelect( event ) {
 
         if ( this.props.isSelected || !this.props.compName ) { 
             return; 
         }
 
-        onSelect( this.props.rowIndex, this.props.index );
+        this.props.onSelect( this.props.rowIndex, this.props.index );
+    }
+
+    handleCloseClick( event ) {
+
+        event.stopPropagation();
+        this.props.onRemoveClick( this.props.rowIndex, this.props.index );
     }
 
     render() {
 
-        return  <div className={ this.state.className }
+        const className = this.props.isSelected 
+                        ? this.state.className + ' ' + css['placeholder--selected']
+                        : this.state.className;
+
+        return  <div className={ className }
                      onDragStart={ this.handleDragStart.bind(this) }
                      onDragEnter={ this.handleDragEnter.bind(this) }
                      onDragLeave={ this.handleDragLeave.bind(this) }
                      onDragOver={ this.handleDragOver.bind(this) }
                      onDrop={ this.handleDrop.bind(this) }
-                     onClick={ this.handleClick.bind(this) }
+                     onClick={ this.handleSelect.bind(this) }
                      draggable={ this.props.compName ? "true" : "false" }
                 >
                     <button className={ css['placeholder__remove'] }
-                            onClick={ () => this.props.onRemoveClick( rowIndex, index ) }
+                            onClick={ this.handleCloseClick.bind(this) }
                     >
                         x
                     </button>
                     <div className={ css['placeholder__content'] }>
-                        <VendorComp name={ this.props.compName } propDefs={ this.props.compPropDefs } />
+                        <VendorComp key={ utils.genRandomString() } name={ this.props.compName } propDefs={ this.props.compPropDefs } />
                     </div>
                 </div>
     }
-
-
 }
 
 function mapDispatchToProps( dispatch ) {

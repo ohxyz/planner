@@ -48,3 +48,21 @@ export function PropDef( args={} ) {
     this.type = type;
     this.value = value;
 }
+
+export function PropPanel( args={} ) {
+
+    const {
+
+        compName = '',
+        compPropDefs = {},
+        chIndex = -1,
+        rowIndex = -1,
+        phIndex = -1
+    } = args;
+
+    this.compName = compName;
+    this.compPropDefs = compPropDefs;
+    this.chIndex = chIndex;
+    this.rowIndex = rowIndex;
+    this.phIndex = phIndex;
+}
