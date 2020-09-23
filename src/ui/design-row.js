@@ -45,6 +45,7 @@ function DesignRow( props ) {
                             rowIndex={rowIndex} 
                             compName={ph.compName}
                             compPropDefs={ph.compPropDefs}
+                            isSelected={ph.isSelected}
                         />
                     )
                 }

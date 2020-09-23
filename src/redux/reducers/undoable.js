@@ -250,5 +250,25 @@ export function undoableReducer( state=getInitState(), action ) {
         return newState;
     }
 
+    if ( action.type === 'placeholder/select' ) {
+
+        const newState = utils.clone( state );
+
+        newState.design.rows.forEach( (row, rowIndex) => {
+
+            row.placeholders.forEach( (ph, phIndex) => {
+
+                if ( action.phIndex === phIndex && action.rowIndex === rowIndex ) {
+                    ph.isSelected = true;
+                }
+                else {
+                    ph.isSelected = false;
+                }
+            } )
+        } )
+
+        return newState;
+    }
+
     return state;
 }

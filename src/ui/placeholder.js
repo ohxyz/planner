@@ -1,54 +1,68 @@
 import css from '~/css/placeholder.module.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compStore } from '~/comp-store';
 import { VendorComp } from './vendor-comp';
 
-function Placeholder( props ) {
+class Placeholder extends React.Component {
 
-    const { 
-        id = 'n/a',
-        rowIndex = -1,
-        index = -1,
-        compName = '',
-        compPropDefs = {},
-        onRemoveClick = () => { throw new Error('onRemoveClick n/a') },
-        onCompPanelItemDrop = () => { throw new Error('onCompPanelItemDrop n/a') },
-        onCompHolderDrop = () => { throw new Error('onCompHolderDrop n/a') },
-    } = props;
-    
-    const [ className, setClassName ] = useState( css['placeholder'] );
+    static defaultProps = {
+        id: 'n/a',
+        rowIndex: -1,
+        index: -1,
+        compName: '',
+        compPropDefs: {},
+        isSelected: false,
+        onSelect: () => { throw new Error('onSelect n/a') },
+        onRemoveClick: () => { throw new Error('onRemoveClick n/a') },
+        onCompPanelItemDrop: () => { throw new Error('onCompPanelItemDrop n/a') },
+        onCompHolderDrop: () => { throw new Error('onCompHolderDrop n/a') },
+    }
 
-    function handleDragStart( event ) {
+    constructor( props ) {
 
-        if ( !compName ) { return; }
+        super(props);
+
+        this.state = {
+
+            className: css['placeholder']
+        };
+    }
+
+    handleDragStart( event ) {
+
+        if ( !this.props.compName ) { return; }
 
         const data = { 
             src: 'placeholder', 
-            compName,
-            rowIndex, 
-            phIndex: index
+            compName: this.props.compName,
+            rowIndex: this.props.rowIndex,
+            phIndex: this.props.index
         };
         event.dataTransfer.setData( 'text/plain', JSON.stringify(data) );
     }
 
-    function handleDragEnter( event ) {
+    handleDragEnter( event ) {
 
-        setClassName( css['placeholder'] + ' ' + css['placeholder--active'] );
+        this.setState( {
+            className: css['placeholder'] + ' ' + css['placeholder--hover']
+        } );
     }
 
-    function handleDragLeave( event ) {
+    handleDragLeave( event ) {
 
-        setClassName( css['placeholder'] );
+        this.setState( {
+            className: css['placeholder']
+        } );
     }
 
-    function handleDragOver( event ) {
+    handleDragOver( event ) {
 
         event.preventDefault();
         event.dataTransfer.dropEffect = 'copy';
     }
 
-    function handleDrop( event ) {
+    handleDrop( event ) {
 
         let data = event.dataTransfer.getData( 'text' );
 
@@ -65,42 +79,61 @@ function Placeholder( props ) {
 
         if ( data.src === 'comp-panel-item' ) {
 
-            onCompPanelItemDrop( rowIndex, index, data.compName );
-            setClassName( css['placeholder'] );
+            this.props.onCompPanelItemDrop( this.props.rowIndex, this.props.index, data.compName );
+            this.setState( {
+                className: css['placeholder'] 
+            } );
             return;
         }
 
         if ( data.src === 'comp-holder' ) {
 
-            onCompHolderDrop( {
-                rowIndex,
-                phIndex: index, 
+            this.props.onCompHolderDrop( {
+                rowIndex: this.props.rowIndex,
+                phIndex: this.props.index, 
                 chIndex: data.chIndex 
             } );
 
-            setClassName( css['placeholder'] );
+            this.setState( {
+                className: css['placeholder'] 
+            } );
             
             return;
         }
     }
 
-    return  <div className={ className }
-                 onDragStart={ handleDragStart }
-                 onDragEnter={ handleDragEnter }
-                 onDragLeave={ handleDragLeave }
-                 onDragOver={ handleDragOver }
-                 onDrop={ handleDrop }
-                 draggable={ compName ? "true" : "false" }
-            >
-                <button className={ css['placeholder__remove'] }
-                        onClick={ () => onRemoveClick( rowIndex, index ) }
+    handleClick( event ) {
+
+        if ( this.props.isSelected || !this.props.compName ) { 
+            return; 
+        }
+
+        onSelect( this.props.rowIndex, this.props.index );
+    }
+
+    render() {
+
+        return  <div className={ this.state.className }
+                     onDragStart={ this.handleDragStart.bind(this) }
+                     onDragEnter={ this.handleDragEnter.bind(this) }
+                     onDragLeave={ this.handleDragLeave.bind(this) }
+                     onDragOver={ this.handleDragOver.bind(this) }
+                     onDrop={ this.handleDrop.bind(this) }
+                     onClick={ this.handleClick.bind(this) }
+                     draggable={ this.props.compName ? "true" : "false" }
                 >
-                    x
-                </button>
-                <div className={ css['placeholder__content'] }>
-                    <VendorComp name={ compName } propDefs={ compPropDefs } />
+                    <button className={ css['placeholder__remove'] }
+                            onClick={ () => this.props.onRemoveClick( rowIndex, index ) }
+                    >
+                        x
+                    </button>
+                    <div className={ css['placeholder__content'] }>
+                        <VendorComp name={ this.props.compName } propDefs={ this.props.compPropDefs } />
+                    </div>
                 </div>
-            </div>
+    }
+
+
 }
 
 function mapDispatchToProps( dispatch ) {
@@ -114,6 +147,9 @@ function mapDispatchToProps( dispatch ) {
         },
         onCompHolderDrop: payload => {
             dispatch( { type: 'placeholder/add-comp-from-comp-holder', ...payload } )
+        },
+        onSelect: ( rowIndex, phIndex ) => {
+            dispatch( { type: 'placeholder/select', rowIndex, phIndex } )
         }
     }   
 }
