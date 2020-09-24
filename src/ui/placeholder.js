@@ -18,6 +18,7 @@ class Placeholder extends React.Component {
         onRemoveClick: () => { throw new Error('onRemoveClick n/a') },
         onCompPanelItemDrop: () => { throw new Error('onCompPanelItemDrop n/a') },
         onCompHolderDrop: () => { throw new Error('onCompHolderDrop n/a') },
+        onPlaceholderDrop: () => { throw new Error('onPlaceholderDrop n/a') }
     }
 
     constructor( props ) {
@@ -28,6 +29,8 @@ class Placeholder extends React.Component {
 
             className: css['placeholder']
         };
+
+        this.myRef = React.createRef();
     }
 
     handleDragStart( event ) {
@@ -35,7 +38,7 @@ class Placeholder extends React.Component {
         if ( !this.props.compName ) { return; }
 
         // Set an effect to avoid, in some cases, text is copied to a component. eg. Text Field
-        event.dataTransfer.effectAllowed = 'move';
+        // event.dataTransfer.effectAllowed = 'copy';
         
         const data = { 
             src: 'placeholder', 
@@ -49,9 +52,14 @@ class Placeholder extends React.Component {
 
     handleDragEnter( event ) {
 
-        this.setState( {
-            className: css['placeholder'] + ' ' + css['placeholder--hover']
-        } );
+        // Without following check, it can cause `hover` state to stay in place
+        // when moving vendor component out of placeholder
+        if ( event.target === this.myRef.current ) {
+
+            this.setState( {
+                className: css['placeholder'] + ' ' + css['placeholder--hover']
+            } );
+        }
     }
 
     handleDragLeave( event ) {
@@ -101,6 +109,18 @@ class Placeholder extends React.Component {
             } );
             return;
         }
+
+        if ( data.src === 'placeholder' ) {
+
+            this.props.onPlaceholderDrop( {
+                rowIndex: data.rowIndex, 
+                phIndex: data.phIndex,
+                newRowIndex: this.props.rowIndex,
+                newPhIndex: this.props.index
+            } );
+
+            return;
+        }
     }
 
     handleSelect( event ) {
@@ -124,12 +144,6 @@ class Placeholder extends React.Component {
                       ? this.state.className + ' ' + css['placeholder--selected']
                       : this.state.className;
 
-        // In some cases, `dragleave` event is not triggered, eg. Text Field leaves placeholder
-        // Make sure placeholder's style is set to original
-        if ( !this.props.compName ) {
-            className = css['placeholder'];
-        }
-
         return  <div className={ className }
                      onDragStart={ this.handleDragStart.bind(this) }
                      onDragEnter={ this.handleDragEnter.bind(this) }
@@ -138,6 +152,7 @@ class Placeholder extends React.Component {
                      onDrop={ this.handleDrop.bind(this) }
                      onClick={ this.handleSelect.bind(this) }
                      draggable={ this.props.compName ? "true" : "false" }
+                     ref={ this.myRef }
                 >
                     <button className={ css['placeholder__remove'] }
                             onClick={ this.handleCloseClick.bind(this) }
@@ -145,7 +160,10 @@ class Placeholder extends React.Component {
                         x
                     </button>
                     <div className={ css['placeholder__content'] }>
-                        <VendorComp key={ utils.genRandomString() } name={ this.props.compName } propDefs={ this.props.compPropDefs } />
+                        <VendorComp key={ utils.genRandomString() } 
+                                    name={ this.props.compName } 
+                                    propDefs={ this.props.compPropDefs } 
+                        />
                     </div>
                 </div>
     }
@@ -163,9 +181,12 @@ function mapDispatchToProps( dispatch ) {
         onCompHolderDrop: payload => {
             dispatch( { type: 'placeholder/add-comp-from-comp-holder', ...payload } )
         },
+        onPlaceholderDrop: payload => {
+            dispatch( { type: 'placeholder/add-comp-from-placeholder', ...payload } )
+        },
         onSelect: ( rowIndex, phIndex ) => {
             dispatch( { type: 'placeholder/select', rowIndex, phIndex } )
-        }
+        },
     }   
 }
 

@@ -1,5 +1,6 @@
 import utils from '~/utils';
 import { Row, Placeholder, CompHolder, PropPanel } from '~/models';
+import { compStore } from '~/comp-store';
 
 const defaults = {
 
@@ -16,7 +17,8 @@ function getInitState() {
         design: {
             rows: [
                 // debug
-                new Row( 'row-0' )
+                new Row( 'row-0' ),
+                new Row( 'row-1' ),
             ],
             width: defaults.designWidth,
             height: defaults.designHeight,
@@ -118,11 +120,15 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'design/remove-placeholder' ) {
 
         const { rowIndex, phIndex } = action;
-
         const newState = utils.clone( state );
-        const rows = newState.design.rows;
 
-        rows[rowIndex].placeholders.splice( phIndex, 1 );
+        const placeholder = newState.design.rows[rowIndex].placeholders[phIndex];
+
+        if ( placeholder.isSelected ) {
+            newState.propPanel = new PropPanel();
+        }
+
+        newState.design.rows[rowIndex].placeholders.splice( phIndex, 1 );
 
         return newState;
     }
@@ -183,6 +189,12 @@ export function undoableReducer( state=getInitState(), action ) {
     if ( action.type === 'comp-holder/remove' ) {
 
         const newState = utils.clone( state );
+        const compHolder = newState.mainPanel.compHolders[action.index];
+
+        if ( compHolder.isSelected ) {
+            newState.propPanel = new PropPanel();
+        }
+
         newState.mainPanel.compHolders.splice( action.index, 1 );
 
         return newState;
@@ -234,8 +246,6 @@ export function undoableReducer( state=getInitState(), action ) {
         const newState = utils.clone( state );
         let target = null;
 
-        console.log( '@@', action );
-
         if ( action.chIndex !== -1 && action.rowIndex === -1 && action.phIndex === -1 ) {
             target = newState.mainPanel.compHolders[action.chIndex];
         }
@@ -257,8 +267,19 @@ export function undoableReducer( state=getInitState(), action ) {
 
         const newState = utils.clone( state );
         const placeholder = newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ];
-        placeholder.compName = action.compName;
+        const compPropDefsCopy = utils.clone( compStore.get(action.compName).propDefs );
 
+        placeholder.compName = action.compName;
+        placeholder.compPropDefs = compPropDefsCopy;
+
+        const compPropDefsCopy2 = utils.clone( compStore.get(action.compName).propDefs );
+
+        newState.propPanel = new PropPanel( {
+            compName: action.compName,
+            compPropDefs: compPropDefsCopy2,
+            rowIndex: action.rowIndex,
+            phIndex: action.phIndex
+        } );
         return newState;
     }
 
@@ -284,11 +305,32 @@ export function undoableReducer( state=getInitState(), action ) {
         return newState;
     }
 
+    if ( action.type === 'placeholder/add-comp-from-placeholder' ) {
+
+        const newState = utils.clone( state );
+
+        const srcPlaceholder = utils.clone( newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ] );
+        newState.design.rows[ action.newRowIndex ].placeholders[ action.newPhIndex ] = srcPlaceholder;
+
+        newState.propPanel = new PropPanel( {
+            compName: srcPlaceholder.compName,
+            compPropDefs: utils.clone( srcPlaceholder.compPropDefs ),
+            rowIndex: action.newRowIndex,
+            phIndex: action.newPhIndex,
+        } );
+
+        newState.design.rows[ action.rowIndex ].placeholders[ action.phIndex ] = new Placeholder();
+
+        return newState;
+    }
+
     if ( action.type === 'placeholder/select' ) {
 
         const newState = utils.clone( state );
 
         deselectAllCompHolders( newState );
+
+        let placeholder = null;
 
         newState.design.rows.forEach( (row, rowIndex) => {
 
@@ -296,11 +338,19 @@ export function undoableReducer( state=getInitState(), action ) {
 
                 if ( action.phIndex === phIndex && action.rowIndex === rowIndex ) {
                     ph.isSelected = true;
+                    placeholder = ph;
                 }
                 else {
                     ph.isSelected = false;
                 }
             } )
+        } );
+
+        newState.propPanel = new PropPanel( {
+            compName: placeholder.compName,
+            compPropDefs: utils.clone( placeholder.compPropDefs ),
+            rowIndex: action.rowIndex,
+            phIndex: action.phIndex,
         } );
 
         return newState;
