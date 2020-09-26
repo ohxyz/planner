@@ -20,12 +20,20 @@ compStore.add( 'Button', Button, {
 
 compStore.add( 'Checkbox', Checkbox, {
     label: { type: 'text', label: 'Label', value: 'hello' }
-});
+} );
 
 compStore.add( 'Text Field', TextField, {
     label: { type: 'text', label: 'Label', value: 'Text' },
     error: { type: 'boolean', label: 'Has error?', value: false }
 } );
+
+compStore.add( 
+    'Button Wrap', 
+    ( {content} ) => <Button>{content}</Button>,
+    {
+        content: { type: 'text', label: 'Content', value: 'yes' }
+    } 
+);
 
 ReactDOM.render(
     <Provider store={ store }>
